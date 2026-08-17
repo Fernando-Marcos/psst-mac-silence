@@ -1,0 +1,42 @@
+name: macOS CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    name: Test and build universal app
+    runs-on: macos-15
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run tests
+        run: ./Scripts/test.sh
+
+      - name: Build application
+        run: ./Scripts/build-app.sh
+
+      - name: Verify bundle
+        run: |
+          plutil -lint build/Psst.app/Contents/Info.plist
+          codesign --verify --deep --strict build/Psst.app
+          lipo build/Psst.app/Contents/MacOS/Psst -verify_arch x86_64 arm64
+
+      - name: Package application
+        run: ditto -c -k --sequesterRsrc --keepParent build/Psst.app Psst-macOS-universal.zip
+
+      - name: Upload application artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Psst-macOS-universal
+          path: Psst-macOS-universal.zip
+          if-no-files-found: error
