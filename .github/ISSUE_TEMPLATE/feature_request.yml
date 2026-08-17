@@ -1,0 +1,26 @@
+name: Propuesta de mejora
+description: Sugiere una mejora segura y útil para Psst.
+title: "[Mejora]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Necesidad
+      description: ¿Qué problema resolvería esta mejora?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Solución propuesta
+      description: Describe cómo te gustaría que funcionase.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Seguridad
+      options:
+        - label: La propuesta no desactiva protecciones térmicas ni fuerza los ventiladores.
+          required: true

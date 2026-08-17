@@ -1,0 +1,42 @@
+name: Informe de error
+description: Comunica un comportamiento incorrecto o inesperado.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Gracias por ayudarnos a mejorar Psst. No incluyas contraseñas ni datos personales.
+  - type: input
+    id: macos
+    attributes:
+      label: Versión de macOS
+      placeholder: macOS 15.6
+    validations:
+      required: true
+  - type: input
+    id: mac
+    attributes:
+      label: Modelo de Mac
+      placeholder: MacBook Pro con Apple Silicon o Intel
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Versión de Psst
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Pasos para reproducirlo
+      description: Explica qué hiciste y qué ocurrió.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Resultado esperado
+    validations:
+      required: true
