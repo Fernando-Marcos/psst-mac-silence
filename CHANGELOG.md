@@ -14,6 +14,7 @@
 - El menú de la barra de menús permite elegir cualquiera de los tres modos (con marca de verificación en el seleccionado) y activarlo o desactivarlo sin necesidad de abrir la ventana principal.
 - Elegir un modo en el menú de la barra lo activa al instante si Psst estaba inactiva, sin pulsar un botón aparte.
 - Escribe **Biblioteca** con mayúscula inicial allá donde nombra el modo, igual que Concentración y Ultra Focus.
+- Sustituye los iconos de la cabecera de la ventana principal: la onda de sonido por un altavoz con sonido, y la luna por un altavoz tachado, conservando los colores cian y menta originales.
 
 ## [1.3.0] - 2026-08-17
 

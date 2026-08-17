@@ -61,7 +61,7 @@ struct ContentView: View {
 
     private var header: some View {
         VStack(spacing: 2) {
-            Image(systemName: silence.isActive ? "moon.stars.fill" : "waveform.path")
+            Image(systemName: silence.isActive ? "speaker.slash.fill" : "speaker.wave.2.fill")
                 .font(.system(size: 24, weight: .light))
                 .foregroundStyle(silence.isActive ? .mint : .cyan)
             Text("Psst").font(.system(size: 34, weight: .bold, design: .rounded))
