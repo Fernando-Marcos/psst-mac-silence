@@ -1,5 +1,13 @@
 # Historial de cambios
 
+## [1.4.0] - 2026-08-17
+
+- Añade **Concentración (Soft Mode)**: silencia todo el equipo y pide permiso mediante un aviso antes de dejar sonar música, podcast o vídeo con auriculares.
+- El permiso concedido en Concentración dura hasta desactivar Psst; mantener el silencio conserva la vigilancia como en Ultra Focus.
+- Los tres modos (biblioteca, Concentración, Ultra Focus) pasan a ser mutuamente excluyentes.
+- Elimina la integración con Atajos (automatización de No molestar y Bajo consumo): reducía la superficie del proyecto sin aportar al nuevo modelo de modos.
+- Actualiza el pie de la ventana principal a "Silencio para concentrarte. Respeto para no molestar."
+
 ## [1.3.0] - 2026-08-17
 
 - Presenta el bloqueo continuo como el modo opcional **Ultra Focus (Hard Mode)**.

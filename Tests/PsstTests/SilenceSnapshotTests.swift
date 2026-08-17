@@ -1,7 +1,7 @@
 import XCTest
 @testable import Psst
 
-final class ShortcutURLBuilderTests: XCTestCase {
+final class SilenceSnapshotTests: XCTestCase {
     func testSnapshotMergesOnlyPreviouslyUnknownAudioState() {
         let stored = SilenceSnapshot(devices: [
             AudioDeviceSnapshot(deviceID: 7, channels: [
@@ -26,11 +26,10 @@ final class ShortcutURLBuilderTests: XCTestCase {
         XCTAssertEqual(merged.devices[1].deviceID, 9)
     }
 
-    func testActivationURLUsesOfficialSchemeAndEncodedName() {
-        let url = ShortcutURLBuilder.runURL(active: true)
-        XCTAssertEqual(url?.scheme, "shortcuts")
-        XCTAssertEqual(url?.host, "run-shortcut")
-        XCTAssertTrue(url?.query?.contains("Psst%20Activar%20biblioteca") == true)
+    func testFocusModeRoundTripsThroughRawValue() {
+        for mode: FocusMode in [.normal, .soft, .hard] {
+            XCTAssertEqual(FocusMode(rawValue: mode.rawValue), mode)
+        }
     }
 
     func testSnapshotRoundTrip() throws {

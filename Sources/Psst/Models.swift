@@ -42,17 +42,8 @@ struct AudioEnforcementState: Equatable {
     let isOutputRunning: Bool
 }
 
-enum ShortcutURLBuilder {
-    static let activateName = "Psst Activar biblioteca"
-    static let deactivateName = "Psst Desactivar biblioteca"
-
-    static func runURL(active: Bool) -> URL? {
-        var components = URLComponents()
-        components.scheme = "shortcuts"
-        components.host = "run-shortcut"
-        components.queryItems = [
-            URLQueryItem(name: "name", value: active ? activateName : deactivateName)
-        ]
-        return components.url
-    }
+enum FocusMode: String {
+    case normal
+    case soft
+    case hard
 }

@@ -3,12 +3,10 @@ import Foundation
 @main
 enum ModelSmoke {
     static func main() throws {
-        let activeURL = ShortcutURLBuilder.runURL(active: true)
-        let inactiveURL = ShortcutURLBuilder.runURL(active: false)
-        precondition(activeURL?.scheme == "shortcuts")
-        precondition(activeURL?.host == "run-shortcut")
-        precondition(activeURL?.query?.contains("Psst%20Activar%20biblioteca") == true)
-        precondition(inactiveURL?.query?.contains("Psst%20Desactivar%20biblioteca") == true)
+        precondition(FocusMode(rawValue: "soft") == .soft)
+        precondition(FocusMode(rawValue: "hard") == .hard)
+        precondition(FocusMode(rawValue: "normal") == .normal)
+        precondition(FocusMode(rawValue: "bogus") == nil)
 
         let snapshot = SilenceSnapshot(devices: [
             AudioDeviceSnapshot(deviceID: 42, channels: [
@@ -17,6 +15,6 @@ enum ModelSmoke {
         ])
         let restored = try JSONDecoder().decode(SilenceSnapshot.self, from: JSONEncoder().encode(snapshot))
         precondition(restored == snapshot)
-        print("OK: URLs seguras de Atajos y restauración de audio verificadas")
+        print("OK: modos de enfoque y restauración de audio verificados")
     }
 }

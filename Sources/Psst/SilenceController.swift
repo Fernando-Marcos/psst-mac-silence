@@ -7,26 +7,29 @@ final class SilenceController: ObservableObject {
     @Published var isActive: Bool
     @Published var isBusy = false
     @Published var isShowingBlockedNotice = false
+    @Published var isShowingSoftPermissionPrompt = false
     @Published var statusMessage = "Silencia el Mac con un toque."
-    @AppStorage("runAutomation") var runAutomation = false
-    @AppStorage("ultraFocusEnabled") var ultraFocusEnabled = true
+    @Published var focusMode: FocusMode {
+        didSet { UserDefaults.standard.set(focusMode.rawValue, forKey: focusModeKey) }
+    }
 
     private let activeKey = "silenceModeActive"
+    private let focusModeKey = "focusMode"
     private let snapshotURL: URL
     private var enforcementTask: Task<Void, Never>?
     private var wasAudioRunning = false
     private var lastNoticeDate = Date.distantPast
+    private var softAudioAllowed = false
 
     init() {
         isActive = UserDefaults.standard.bool(forKey: activeKey)
+        focusMode = FocusMode(rawValue: UserDefaults.standard.string(forKey: focusModeKey) ?? "") ?? .hard
         let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("Psst", isDirectory: true)
         try? FileManager.default.createDirectory(at: support, withIntermediateDirectories: true)
         snapshotURL = support.appendingPathComponent("restore-state.json")
         if isActive {
-            statusMessage = ultraFocusEnabled
-                ? "Ultra Focus sigue protegiendo el silencio."
-                : "El modo biblioteca sigue activo."
+            statusMessage = activeStatusMessage
             Task { @MainActor [weak self] in self?.resumeEnforcement() }
         }
     }
@@ -38,8 +41,24 @@ final class SilenceController: ObservableObject {
         if isActive { deactivate() } else { activate() }
     }
 
+    /// Called from the Soft Mode alert when the user allows music/video for this session.
+    func allowSoftAudio() {
+        softAudioAllowed = true
+        isShowingSoftPermissionPrompt = false
+        if let snapshot = load() {
+            try? AudioService.restore(snapshot)
+        }
+        statusMessage = "Música y vídeo permitidos. Concentración ya no vigila el audio hasta que desactives Psst."
+    }
+
+    /// Called from the Soft Mode alert when the user keeps the silence.
+    func keepSoftSilence() {
+        isShowingSoftPermissionPrompt = false
+        try? AudioService.silence()
+        statusMessage = "Sonido bloqueado. Concentración sigue en silencio."
+    }
+
     private func activate() {
-        var warnings: [String] = []
         do {
             let snapshot = try AudioService.capture()
             save(snapshot)
@@ -48,18 +67,14 @@ final class SilenceController: ObservableObject {
             statusMessage = error.localizedDescription
             return
         }
-        if runAutomation && !AutomationService.run(active: true) {
-            warnings.append("No se pudo abrir Atajos.")
-        }
         isActive = true
+        softAudioAllowed = false
         UserDefaults.standard.set(true, forKey: activeKey)
-        if ultraFocusEnabled {
+        if focusMode != .normal {
             wasAudioRunning = (try? AudioService.enforcementState().isOutputRunning) ?? false
             startEnforcement()
         }
-        statusMessage = warnings.isEmpty
-            ? activationMessage
-            : warnings.joined(separator: " · ")
+        statusMessage = activeStatusMessage
     }
 
     private func deactivate() {
@@ -69,10 +84,8 @@ final class SilenceController: ObservableObject {
             do { try AudioService.restore(snapshot) }
             catch { warnings.append(error.localizedDescription) }
         }
-        if runAutomation && !AutomationService.run(active: false) {
-            warnings.append("No se pudo abrir Atajos.")
-        }
         isActive = false
+        softAudioAllowed = false
         UserDefaults.standard.set(false, forKey: activeKey)
         try? FileManager.default.removeItem(at: snapshotURL)
         statusMessage = warnings.isEmpty ? "Ajustes de audio restaurados." : warnings.joined(separator: " · ")
@@ -84,7 +97,8 @@ final class SilenceController: ObservableObject {
         }
         try? AudioService.silence()
         wasAudioRunning = false
-        if ultraFocusEnabled { startEnforcement() }
+        softAudioAllowed = false
+        if focusMode != .normal { startEnforcement() }
     }
 
     private func startEnforcement() {
@@ -103,6 +117,7 @@ final class SilenceController: ObservableObject {
         enforcementTask = nil
         wasAudioRunning = false
         isShowingBlockedNotice = false
+        isShowingSoftPermissionPrompt = false
     }
 
     private func enforceSilence() {
@@ -110,13 +125,28 @@ final class SilenceController: ObservableObject {
         let playbackStarted = state.isOutputRunning && !wasAudioRunning
         wasAudioRunning = state.isOutputRunning
 
-        if state.needsSilencing {
-            preserveNewOutputState()
-            try? AudioService.silence()
-        }
+        switch focusMode {
+        case .normal:
+            return
 
-        if state.needsSilencing || playbackStarted {
-            showBlockedNotice()
+        case .hard:
+            if state.needsSilencing {
+                preserveNewOutputState()
+                try? AudioService.silence()
+            }
+            if state.needsSilencing || playbackStarted {
+                showBlockedNotice()
+            }
+
+        case .soft:
+            guard !softAudioAllowed else { return }
+            if state.needsSilencing {
+                preserveNewOutputState()
+                try? AudioService.silence()
+            }
+            if playbackStarted {
+                showSoftPermissionPrompt()
+            }
         }
     }
 
@@ -127,24 +157,40 @@ final class SilenceController: ObservableObject {
     }
 
     private func showBlockedNotice() {
-        let now = Date()
-        guard now.timeIntervalSince(lastNoticeDate) >= 6 else { return }
-        lastNoticeDate = now
+        guard shouldShowNotice() else { return }
         statusMessage = "Ultra Focus ha bloqueado un intento de audio."
         isShowingBlockedNotice = true
+        bringWindowForward()
+    }
+
+    private func showSoftPermissionPrompt() {
+        guard shouldShowNotice() else { return }
+        statusMessage = "Un sonido quiere reproducirse. Concentración espera tu permiso."
+        isShowingSoftPermissionPrompt = true
+        bringWindowForward()
+    }
+
+    private func shouldShowNotice() -> Bool {
+        let now = Date()
+        guard now.timeIntervalSince(lastNoticeDate) >= 6 else { return false }
+        lastNoticeDate = now
+        return true
+    }
+
+    private func bringWindowForward() {
         NSApplication.shared.activate(ignoringOtherApps: true)
         NSApplication.shared.windows.first(where: { $0.canBecomeKey })?.makeKeyAndOrderFront(nil)
     }
 
-    private var activationMessage: String {
-        if ultraFocusEnabled {
-            return runAutomation
-                ? "Ultra Focus y automatización activos."
-                : "Ultra Focus bloquea el audio hasta que desactives Psst."
+    private var activeStatusMessage: String {
+        switch focusMode {
+        case .hard:
+            return "Ultra Focus bloquea el audio hasta que desactives Psst."
+        case .soft:
+            return "Concentración silencia el equipo y te avisa antes de dejar sonar música o vídeo."
+        case .normal:
+            return "Audio silenciado. Modo biblioteca sin vigilancia continua."
         }
-        return runAutomation
-            ? "Silencio y automatización activos."
-            : "Audio silenciado. Ultra Focus está desactivado."
     }
 
     private func save(_ snapshot: SilenceSnapshot) {

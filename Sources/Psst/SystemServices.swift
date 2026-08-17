@@ -1,4 +1,3 @@
-import AppKit
 import CoreAudio
 import Foundation
 
@@ -150,17 +149,5 @@ enum AudioService {
         return withUnsafeBytes(of: &value) { bytes in
             AudioObjectSetPropertyData(device, &property, 0, nil, UInt32(bytes.count), bytes.baseAddress!) == noErr
         }
-    }
-}
-
-enum AutomationService {
-    static func run(active: Bool) -> Bool {
-        guard let url = ShortcutURLBuilder.runURL(active: active) else { return false }
-        return NSWorkspace.shared.open(url)
-    }
-
-    static func openShortcuts() {
-        guard let url = URL(string: "shortcuts://") else { return }
-        NSWorkspace.shared.open(url)
     }
 }

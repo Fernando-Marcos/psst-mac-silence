@@ -3,7 +3,20 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var silence: SilenceController
-    @State private var showingAutomationHelp = false
+
+    private var hardModeBinding: Binding<Bool> {
+        Binding(
+            get: { silence.focusMode == .hard },
+            set: { silence.focusMode = $0 ? .hard : .normal }
+        )
+    }
+
+    private var softModeBinding: Binding<Bool> {
+        Binding(
+            get: { silence.focusMode == .soft },
+            set: { silence.focusMode = $0 ? .soft : .normal }
+        )
+    }
 
     var body: some View {
         ZStack {
@@ -31,12 +44,17 @@ struct ContentView: View {
         .frame(width: 468, height: 468)
         .preferredColorScheme(.dark)
         .background(WindowGlassConfigurator())
-        .sheet(isPresented: $showingAutomationHelp) { AutomationHelpView() }
         .alert("Audio bloqueado por Ultra Focus", isPresented: $silence.isShowingBlockedNotice) {
             Button("Mantener silencio", role: .cancel) {}
             Button("Desactivar Psst") { Task { await silence.toggle() } }
         } message: {
             Text("Ultra Focus (Hard Mode) está activo. El audio seguirá bloqueado hasta que desactives Psst.")
+        }
+        .alert("¿Permitir música o vídeo?", isPresented: $silence.isShowingSoftPermissionPrompt) {
+            Button("Mantener en silencio", role: .cancel) { silence.keepSoftSilence() }
+            Button("Permitir") { silence.allowSoftAudio() }
+        } message: {
+            Text("Concentración (Soft Mode) detectó un intento de reproducir sonido. Permítelo si vas a escuchar música o un podcast con cascos; Psst dejará de vigilar el audio hasta que lo desactives.")
         }
     }
 
@@ -81,9 +99,7 @@ struct ContentView: View {
                     .foregroundStyle(silence.isActive ? .mint : .secondary)
             }
             VStack(alignment: .leading, spacing: 1) {
-                Text(silence.isActive
-                    ? (silence.ultraFocusEnabled ? "Ultra Focus activo" : "Modo biblioteca activo")
-                    : "Listo para guardar silencio")
+                Text(silence.isActive ? statusTitle : "Listo para guardar silencio")
                     .font(.subheadline.weight(.semibold))
                 Text(silence.statusMessage)
                     .font(.caption).foregroundStyle(.secondary).lineLimit(2)
@@ -105,22 +121,20 @@ struct ContentView: View {
                         .font(.caption2).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
-                Toggle("", isOn: $silence.ultraFocusEnabled).labelsHidden().controlSize(.small)
+                Toggle("", isOn: hardModeBinding).labelsHidden().controlSize(.small)
             }
             .padding(.horizontal, 13)
             .frame(height: 51)
             Divider().opacity(0.22).padding(.leading, 45)
             HStack(spacing: 11) {
-                Image(systemName: "moon.zzz").frame(width: 24).foregroundStyle(.cyan)
+                Image(systemName: "headphones").frame(width: 24).foregroundStyle(.cyan)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Concentración y bajo consumo").font(.subheadline.weight(.medium))
-                    Text("Automatización opcional de Apple Atajos")
+                    Text("Concentración (Soft Mode)").font(.subheadline.weight(.medium))
+                    Text("Silencia todo y pide permiso antes de dejar sonar música o vídeo")
                         .font(.caption2).foregroundStyle(.secondary)
                 }
-                Spacer(minLength: 5)
-                Button { showingAutomationHelp = true } label: { Image(systemName: "info.circle") }
-                    .buttonStyle(.plain).foregroundStyle(.secondary)
-                Toggle("", isOn: $silence.runAutomation).labelsHidden().controlSize(.small)
+                Spacer(minLength: 0)
+                Toggle("", isOn: softModeBinding).labelsHidden().controlSize(.small)
             }
             .padding(.horizontal, 13)
             .frame(height: 51)
@@ -130,8 +144,16 @@ struct ContentView: View {
     }
 
     private var safetyFooter: some View {
-        Label("Sandbox de Apple · sin contraseña ni acceso a tus archivos", systemImage: "lock.shield.fill")
+        Label("Silencio para concentrarte. Respeto para no molestar.", systemImage: "lock.shield.fill")
             .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+    }
+
+    private var statusTitle: String {
+        switch silence.focusMode {
+        case .hard: return "Ultra Focus activo"
+        case .soft: return "Concentración activa"
+        case .normal: return "Modo biblioteca activo"
+        }
     }
 }
 
@@ -170,42 +192,13 @@ private struct WindowGlassConfigurator: NSViewRepresentable {
     }
 }
 
-private struct AutomationHelpView: View {
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Label("Automatización segura", systemImage: "lock.shield.fill")
-                .font(.title2.bold()).foregroundStyle(.mint)
-            Text("Crea en Atajos estas dos automatizaciones. Añade las acciones de Apple para activar/desactivar No molestar y Bajo consumo si están disponibles en tu versión de macOS:")
-                .fixedSize(horizontal: false, vertical: true)
-            VStack(alignment: .leading, spacing: 9) {
-                Label(ShortcutURLBuilder.activateName, systemImage: "1.circle.fill")
-                Label(ShortcutURLBuilder.deactivateName, systemImage: "2.circle.fill")
-            }
-            .font(.body.weight(.medium))
-            Text("Psst solo abre el esquema oficial shortcuts:// cuando pulsas el botón. No lee tus atajos ni solicita acceso de automatización.")
-                .font(.callout).foregroundStyle(.secondary)
-            HStack {
-                Button("Abrir Atajos") { AutomationService.openShortcuts() }
-                Spacer()
-                Button("Hecho") { dismiss() }.keyboardShortcut(.defaultAction)
-            }
-        }
-        .padding(26)
-        .frame(width: 460)
-    }
-}
-
 struct MenuBarView: View {
     @EnvironmentObject private var silence: SilenceController
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(silence.isActive
-                ? (silence.ultraFocusEnabled ? "Ultra Focus activo" : "Modo biblioteca activo")
-                : "Psst está en espera")
+            Text(silence.isActive ? statusTitle : "Psst está en espera")
                 .font(.headline)
             Button(silence.isActive ? "Desactivar" : "Activar modo biblioteca") {
                 Task { await silence.toggle() }
@@ -219,5 +212,13 @@ struct MenuBarView: View {
             Button("Salir") { NSApplication.shared.terminate(nil) }
         }
         .padding(4)
+    }
+
+    private var statusTitle: String {
+        switch silence.focusMode {
+        case .hard: return "Ultra Focus activo"
+        case .soft: return "Concentración activa"
+        case .normal: return "Modo biblioteca activo"
+        }
     }
 }
