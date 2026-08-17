@@ -1,71 +1,76 @@
 <div align="center">
-  <img src="docs/images/app-icon.png" width="160" alt="Icono de Psst">
+  <img src="docs/images/app-icon.png" width="150" alt="Icono de Psst">
 
   # Psst — Mac Silence
 
-  **Modo biblioteca para macOS: menos interrupciones, menos calor y menos ruido.**
+  **Tu Mac, en modo biblioteca: menos interrupciones y menos ruido.**
 
   [![macOS CI](https://github.com/Fernando-Marcos/psst-mac-silence/actions/workflows/ci.yml/badge.svg)](https://github.com/Fernando-Marcos/psst-mac-silence/actions/workflows/ci.yml)
   [![Última versión](https://img.shields.io/github/v/release/Fernando-Marcos/psst-mac-silence?label=versi%C3%B3n)](https://github.com/Fernando-Marcos/psst-mac-silence/releases/latest)
   [![Licencia MIT](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
   ![macOS 13+](https://img.shields.io/badge/macOS-13%2B-black?logo=apple)
+  ![App Sandbox](https://img.shields.io/badge/Apple-App%20Sandbox-success?logo=apple)
 </div>
 
-Psst es una app nativa y ligera que prepara el Mac para estudiar, concentrarse o trabajar en espacios silenciosos. Con un solo botón silencia el audio, aplica un perfil energético más eficiente y, si lo configuras, activa **No molestar**. Al terminar, restaura los ajustes que tenías antes.
+Psst es una utilidad nativa, pequeña y transparente para preparar el Mac antes de estudiar, opositar o trabajar en un espacio silencioso. Un botón silencia la salida y los avisos del sistema; otro toque restaura el estado anterior.
 
-## Por qué merece la pena instalarla
+<p align="center">
+  <img src="docs/images/app-window-v1.1.0.png" width="468" alt="Ventana compacta y translúcida de Psst 1.1.0">
+</p>
 
-### Si eres estudiante
+## Por qué instalar Psst
+
+### Para estudiantes
 
 - Evita que un vídeo, una web o una alerta suenen por accidente en clase o en la biblioteca.
-- Reduce las interrupciones y ayuda a convertir el inicio de una sesión de estudio en un hábito sencillo.
-- Favorece un funcionamiento más fresco cuando solo necesitas apuntes, navegador, PDF o procesador de texto.
+- Convierte el inicio de una sesión de estudio en un ritual inmediato y fácil de recordar.
+- Ocupa poco espacio, permanece accesible en la barra de menús y no añade distracciones.
 
-### Si estás preparando una oposición
+### Para opositores
 
-- Permite empezar bloques largos de estudio sin revisar varios ajustes del sistema cada vez.
-- Reduce la tentación de atender notificaciones si se combina con el modo de concentración de macOS.
-- Conserva y restaura tu configuración anterior, para que puedas volver a usar el Mac normalmente al finalizar.
+- Reduce pasos repetitivos antes de cada bloque largo de estudio.
+- Puede iniciar una automatización personal de No molestar y Bajo consumo creada en Atajos.
+- Restaura el audio previo al terminar, sin obligarte a recordar cómo estaba configurado.
 
-### Si trabajas en bibliotecas o espacios compartidos
+### Para bibliotecas y espacios compartidos
 
-- Silencia tanto la salida de audio como las alertas del sistema.
-- Disminuye actividad energética innecesaria y la generación de calor, reduciendo la probabilidad de que los ventiladores tengan que acelerarse.
-- Funciona desde la ventana principal o discretamente desde la barra de menús.
+- Silencia las salidas de audio compatibles y los sonidos del sistema mediante Core Audio.
+- Ayuda a evitar interrupciones involuntarias sin tocar el control térmico del equipo.
+- No necesita contraseña de administrador, cuenta, Internet ni procesos en segundo plano fuera de la app.
 
-## Qué hace
+## Diseño compacto y nativo
 
-- Silencia el volumen de salida y los sonidos de alerta.
-- Activa temporalmente el modo de bajo consumo y ajusta opciones de reposo compatibles.
-- Ejecuta dos atajos opcionales para activar y desactivar **No molestar**.
-- Guarda el estado previo y lo restaura al salir del modo biblioteca.
-- Trabaja localmente, sin cuentas, anuncios, analítica ni conexión a servidores.
-- Incluye binario universal para Macs con Apple Silicon e Intel.
+La ventana fija mide 468 × 500 puntos con el marco de macOS: es prácticamente cuadrada y no tiene desplazamiento. Usa materiales translúcidos de AppKit para integrarse con el escritorio y respeta Reducir transparencia de macOS. Psst también está disponible desde la barra de menús.
 
-## Seguridad térmica: silencio sin poner en riesgo el Mac
+## Seguridad Apple por diseño
 
-Psst **no fuerza los ventiladores por debajo de la velocidad mínima segura**. macOS no ofrece una API pública para hacerlo y anular la refrigeración automática podría provocar sobrecalentamiento, pérdida de rendimiento o daños.
+- **App Sandbox activo** con un único entitlement: `com.apple.security.app-sandbox`.
+- **Sin privilegios de administrador**, AppleScript, Apple Events, comandos de shell o procesos auxiliares.
+- **Sin acceso** a red, cámara, micrófono, contactos ni archivos elegidos por el usuario.
+- Audio controlado con la API pública **Core Audio**.
+- Automatización opcional iniciada por el usuario con el esquema oficial `shortcuts://`.
+- Estado reversible guardado exclusivamente en el contenedor privado de la app.
 
-La app actúa sobre la causa habitual del ruido: reduce consumo, actividad y calor para que el propio sistema necesite menos ventilación. macOS mantiene en todo momento el control térmico y puede acelerar los ventiladores si es necesario.
+La configuración cumple la base técnica del sandbox exigido por Apple. Una publicación en Mac App Store todavía requiere firma de distribución, perfil, ficha de App Store Connect y revisión de Apple.
+
+## Ventiladores y bajo consumo
+
+Psst no baja directamente las revoluciones de los ventiladores. Apple no publica una API para ello, y forzar menos refrigeración podría sobrecalentar el Mac. macOS conserva siempre el control térmico.
+
+Si quieres reducir el calor que hace acelerar los ventiladores, puedes activar la integración con Atajos y crear:
+
+1. `Psst Activar biblioteca`, con las acciones de Apple para activar No molestar y Bajo consumo disponibles en tu macOS.
+2. `Psst Desactivar biblioteca`, con las acciones inversas.
+
+Psst abre el atajo cuando pulsas Activar o Desactivar. No enumera, lee ni modifica tu biblioteca de atajos.
 
 ## Instalación
 
-1. Descarga `Psst-1.0.0-macOS-universal.zip` desde [la última versión](https://github.com/Fernando-Marcos/psst-mac-silence/releases/latest).
-2. Descomprime el archivo y mueve `Psst.app` a **Aplicaciones**.
-3. En el primer inicio, haz clic derecho sobre la app y selecciona **Abrir** si macOS muestra el aviso de desarrollador no identificado.
+1. Descarga el ZIP universal desde [la última versión](https://github.com/Fernando-Marcos/psst-mac-silence/releases/latest).
+2. Descomprímelo y mueve `Psst.app` a **Aplicaciones**.
+3. Abre Psst. Las compilaciones de GitHub con firma ad hoc pueden requerir clic derecho → **Abrir** la primera vez.
 
-La primera activación solicita autorización de administrador para cambiar temporalmente el perfil energético. La contraseña se escribe en el diálogo seguro de macOS: Psst no puede verla ni guardarla.
-
-## Activar también No molestar
-
-Apple no proporciona una API pública estable para cambiar los modos de concentración desde una app independiente. Psst usa la integración oficial con **Atajos**:
-
-1. Crea en la app **Atajos** un atajo llamado `Psst Activar biblioteca` que active No molestar.
-2. Crea otro llamado `Psst Desactivar biblioteca` que lo desactive.
-
-Psst los detectará y ejecutará automáticamente. El resto de funciones no depende de estos atajos.
-
-## Compilar desde el código fuente
+## Compilar y verificar
 
 Necesitas macOS 13 o posterior y las Command Line Tools de Apple.
 
@@ -74,10 +79,11 @@ git clone https://github.com/Fernando-Marcos/psst-mac-silence.git
 cd psst-mac-silence
 ./Scripts/test.sh
 ./Scripts/build-app.sh
+codesign -dvvv --entitlements - build/Psst.app
 open build/Psst.app
 ```
 
-El repositorio incluye `Package.swift` para trabajar cómodamente desde Xcode. El script de compilación genera directamente un paquete universal y no depende de SwiftPM.
+El binario generado es universal para Apple Silicon e Intel. La integración continua valida pruebas, firma, sandbox y ambas arquitecturas.
 
 ## Documentación
 
