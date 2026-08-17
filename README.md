@@ -99,6 +99,13 @@ Los tres modos son excluyentes entre sí y solo pueden cambiarse con Psst inacti
 - Reduce pasos repetitivos antes de cada bloque largo de estudio.
 - Restaura el audio previo al terminar, sin obligarte a recordar cómo estaba configurado.
 
+### Para trabajadores y coworkers 💼
+
+- Ideal para oficinas abiertas y espacios de coworking: silencia notificaciones y sonidos sin tener que ir app por app bajando el volumen.
+- Concentración te deja seguir con llamadas, música o vídeos de trabajo con auriculares, sin arriesgarte a que algo suene por los altavoces y moleste a quien tienes al lado.
+- Ultra Focus es perfecto para bloques de trabajo profundo en salas compartidas, donde cualquier sonido accidental interrumpe a más de una persona.
+- Un solo botón para activar y otro para volver exactamente a como tenías el audio: nada que reconfigurar al terminar la jornada.
+
 ### Para bibliotecas y espacios compartidos 🏛️
 
 - El modo biblioteca aplica un silencio reversible sin vigilancia continua.
@@ -191,8 +198,14 @@ El binario generado es universal para Apple Silicon e Intel. La integración con
 
 Psst se distribuye bajo la [licencia MIT](LICENSE).
 
+## Autor ✨
+
+Psst está creado y mantenido por **Fernando Marcos**, desarrollador y diseñador especializado en diseño creativo, marketing, estrategia e IA.
+
+¿Quieres contactarme o ver más proyectos? Visita **[fernandomarcos.com](https://fernandomarcos.com)**.
+
 <div align="center">
 
-<sub>Hecho con 🤫 por <a href="https://github.com/Fernando-Marcos">Fernando Marcos</a></sub>
+<sub>Hecho con 🤫 por <a href="https://fernandomarcos.com">Fernando Marcos</a></sub>
 
 </div>
