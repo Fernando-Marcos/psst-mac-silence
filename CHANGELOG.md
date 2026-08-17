@@ -9,6 +9,8 @@
 - Actualiza el pie de la ventana principal a "Silencio para concentrarte. Respeto para no molestar."
 - Corrige textos de la interfaz que seguían mencionando únicamente "modo biblioteca" (subtítulo, etiqueta de accesibilidad del botón principal y menú de la barra de menús) para que reflejen el modo realmente seleccionado.
 - Corrige la versión mostrada en "Acerca de Psst", que seguía en 1.3.0.
+- Sustituye el icono de la app por un nuevo diseño (altavoz silenciado en degradado azul-violeta); se genera ahora desde un PNG maestro (`docs/images/app-icon.png`) con `Scripts/build-icon.sh` en lugar de dibujarse por código.
+- Rediseña el README con mejor jerarquía visual, primeros pasos, preguntas frecuentes, casos de uso para trabajadores/coworkers y datos de contacto del autor.
 
 ## [1.3.0] - 2026-08-17
 

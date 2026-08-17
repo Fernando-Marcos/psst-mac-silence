@@ -18,7 +18,7 @@
 - `Tests/ModelSmoke.swift` y `Tests/PsstTests/`: pruebas de `FocusMode` y de la instantánea de audio (sin dependencias de UI).
 - `Scripts/build-app.sh`: compila universal, empaqueta el `.app` y firma ad hoc (`codesign --sign -`).
 - `Scripts/test.sh`: compila y ejecuta las pruebas de humo de `Models.swift`.
-- `Scripts/generate-icon.swift`: genera el iconset desde símbolos SF Symbols.
+- `Scripts/build-icon.sh`: genera `Resources/AppIcon.icns` a partir del diseño maestro en `docs/images/app-icon.png`.
 - `docs/ARCHITECTURE.md`: decisiones de seguridad y flujo de activación/desactivación — consultar antes de tocar `SilenceController.swift` o `SystemServices.swift`.
 - `docs/releases/vX.Y.Z.md` + `CHANGELOG.md`: historial de versiones; actualizar ambos en cada release.
 - `.github/`: workflow de CI que valida build universal y entitlements incorporados a la firma.
