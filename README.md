@@ -12,18 +12,50 @@
   ![App Sandbox](https://img.shields.io/badge/Apple-App%20Sandbox-success?logo=apple)
 </div>
 
-Psst es una utilidad nativa, pequeña y transparente para preparar el Mac antes de estudiar, opositar o trabajar en un espacio silencioso. El modo biblioteca silencia las salidas compatibles sin vigilancia continua, **Concentración (Soft Mode)** silencia todo y pide permiso antes de dejar sonar música o vídeo, y **Ultra Focus (Hard Mode)** mantiene bloqueado el audio y corrige cualquier intento de recuperar el volumen. Al desactivar Psst restaura el estado anterior.
+Psst es una utilidad nativa, pequeña y transparente para preparar el Mac antes de estudiar, opositar o trabajar en un espacio silencioso. Elige entre tres modos: **biblioteca** silencia una vez y no vigila nada más, **Concentración (Soft Mode)** silencia todo y pide permiso antes de dejar sonar música o vídeo, y **Ultra Focus (Hard Mode)** bloquea el audio sin excepciones hasta que desactives Psst. Al desactivarla, restaura siempre el estado anterior.
 
 <p align="center">
-  <img src="docs/images/app-window-v1.3.0.png" width="468" alt="Ventana compacta y translúcida de Psst 1.3.0 con Ultra Focus">
+  <img src="docs/images/app-window-v1.4.0.png" width="468" alt="Ventana compacta y translúcida de Psst 1.4.0 con Concentración (Soft Mode) activado">
 </p>
+
+## Instalación
+
+1. Descarga el ZIP universal desde [la última versión](https://github.com/Fernando-Marcos/psst-mac-silence/releases/latest).
+2. Descomprímelo y mueve `Psst.app` a **Aplicaciones**.
+3. Abre Psst. Las compilaciones de GitHub con firma ad hoc pueden requerir clic derecho → **Abrir** la primera vez.
+
+No pide contraseña de administrador, cuenta ni conexión a Internet. Es un único binario universal (Apple Silicon e Intel) sin dependencias.
+
+## Los tres modos
+
+| Modo | Qué hace | Cuándo usarlo |
+| --- | --- | --- |
+| **Biblioteca** | Silencia el equipo una vez al activarse. Sin vigilancia continua. | Silencio puntual y reversible, sin más. |
+| **Concentración (Soft Mode)** | Silencia todo y vigila el audio; si detecta un intento de reproducir sonido, pregunta antes de dejarlo sonar. | Estudiar o trabajar escuchando música o un podcast con auriculares. |
+| **Ultra Focus (Hard Mode)** | Silencia todo y bloquea sin preguntar cualquier intento de recuperar el sonido. | Máxima protección contra ruido accidental en espacios compartidos. |
+
+Los tres modos son excluyentes entre sí y solo pueden cambiarse con Psst inactivo.
+
+### Concentración (Soft Mode) en detalle
+
+- Al activar Psst, silencia todas las salidas compatibles, igual que el modo biblioteca.
+- Comprueba la actividad de audio cada 400 ms, igual que Ultra Focus.
+- Cuando detecta un intento de reproducir sonido, lo mantiene en silencio y muestra un aviso pidiendo permiso antes de que se oiga nada.
+- Si lo permites, Psst restaura el audio y deja de vigilarlo hasta que desactives la app; si eliges mantener el silencio, sigue bloqueando futuros intentos como Ultra Focus.
+
+### Ultra Focus (Hard Mode) en detalle
+
+- Comprueba cada 400 ms que volumen y mute continúan protegidos.
+- Vuelve a silenciar cualquier salida compatible que recupere el sonido, sin pedir confirmación.
+- Muestra un aviso visible sin identificar ni inspeccionar la aplicación que reproduce audio.
+- Aparece activado por defecto para conservar la protección de versiones anteriores.
 
 ## Por qué instalar Psst
 
 ### Para estudiantes
 
 - Ultra Focus evita que Spotify, un vídeo, una web o una alerta recuperen el sonido por accidente en clase o en la biblioteca.
-- Concentración (Soft Mode) te deja estudiar con música o un podcast con cascos: silencia el resto y solo pide permiso cuando detecta un intento de reproducir sonido.
+- Concentración te deja estudiar con música o un podcast con cascos: silencia el resto y solo pide permiso cuando detecta un intento de reproducir sonido.
 - Convierte el inicio de una sesión de estudio en un ritual inmediato y fácil de recordar.
 - Ocupa poco espacio, permanece accesible en la barra de menús y no añade distracciones.
 
@@ -54,37 +86,11 @@ La ventana fija mide 468 × 500 puntos con el marco de macOS: es prácticamente 
 
 Psst bloquea el **sonido audible** de la salida predeterminada compatible. Por seguridad y privacidad no inspecciona ni controla el reproductor de Spotify, el navegador o una app de vídeo: su reproducción puede avanzar sin que se oiga nada. Algunas salidas digitales o externas que no permiten volumen o mute por software quedan fuera del control de cualquier app sandboxed; Psst lo comunica si no puede silenciarlas.
 
-## Ultra Focus (Hard Mode)
-
-Actívalo antes de iniciar Psst cuando necesites la máxima protección contra sonidos accidentales. Mientras la sesión está activa:
-
-- comprueba cada 400 ms que volumen y mute continúan protegidos;
-- vuelve a silenciar cualquier salida compatible que recupere el sonido;
-- muestra un aviso visible sin identificar ni inspeccionar la aplicación que reproduce audio;
-- impide cambiar de modo hasta desactivar Psst, evitando estados ambiguos.
-
-Ultra Focus aparece activado por defecto para conservar la protección de versiones anteriores. Puedes apagarlo con el interruptor cuando Psst esté inactivo y elegir el modo biblioteca o Concentración.
-
 La configuración cumple la base técnica del sandbox exigido por Apple. Una publicación en Mac App Store todavía requiere firma de distribución, perfil, ficha de App Store Connect y revisión de Apple.
-
-## Concentración (Soft Mode)
-
-Pensado para estudiar o concentrarte con música o un podcast puestos con auriculares, sin dejar de silenciar el resto del equipo. Actívalo antes de iniciar Psst:
-
-- al iniciar Psst, silencia todas las salidas compatibles, igual que el modo biblioteca;
-- comprueba cada 400 ms la actividad de audio, igual que Ultra Focus;
-- cuando detecta un intento de reproducir sonido, lo mantiene en silencio y muestra un aviso para pedirte permiso antes de que se oiga nada;
-- si permites el sonido, Psst restaura el audio y deja de vigilarlo hasta que desactives la app; si eliges mantener el silencio, sigue bloqueando futuros intentos.
 
 ## Ventiladores y bajo consumo
 
 Psst no baja directamente las revoluciones de los ventiladores. Apple no publica una API para ello, y forzar menos refrigeración podría sobrecalentar el Mac. macOS conserva siempre el control térmico y decide cuándo activar el Bajo consumo.
-
-## Instalación
-
-1. Descarga el ZIP universal desde [la última versión](https://github.com/Fernando-Marcos/psst-mac-silence/releases/latest).
-2. Descomprímelo y mueve `Psst.app` a **Aplicaciones**.
-3. Abre Psst. Las compilaciones de GitHub con firma ad hoc pueden requerir clic derecho → **Abrir** la primera vez.
 
 ## Compilar y verificar
 

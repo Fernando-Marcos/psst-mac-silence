@@ -29,11 +29,12 @@
 1. Antes de tocar audio/sandbox, lee `docs/ARCHITECTURE.md` para no romper el modelo de privilegios ni el flujo de activación/restauración.
 2. Cambios en `Sources/Psst/`, ejecuta `./Scripts/test.sh` (pruebas de modelos) antes de dar nada por terminado. Si tocas `SilenceController.swift`, verifica manualmente activar/desactivar y los tres modos (biblioteca, Concentración, Ultra Focus) en un Mac real — el comportamiento de Core Audio no es simulable en pruebas unitarias.
 3. Para verificar el build completo: `./Scripts/build-app.sh` y luego `codesign -dvvv --entitlements - build/Psst.app` para confirmar que el entitlement sigue siendo únicamente `app-sandbox`.
-4. Actualiza `CHANGELOG.md` y añade `docs/releases/vX.Y.Z.md` en cada cambio de versión visible al usuario; sigue el formato de los releases anteriores.
-5. La CI de GitHub Actions valida build universal (arm64+x86_64) y entitlements en cada push — no la saltes ni la debilites.
-6. No hagas commit, push, tag de release ni publicación de Release en GitHub sin confirmación explícita de Fernando para ese cambio concreto.
-7. Antes de cualquier push, ejecuta Gitleaks con redacción total; este proyecto no debería tener secretos nunca (sin backend, sin red), así que cualquier hallazgo es señal de un error grave.
-8. Proyecto clasificado como publicación en GitHub (repo público, releases, CI) pero sin despliegue en servidor propio — no aplica `production-deploy`/cPanel.
+4. Tras cada cambio que modifique `Sources/Psst/` y compile correctamente, sustituye la app instalada en `/Applications/Psst.app` por el build nuevo (cerrar la instancia en ejecución, borrar la anterior, copiar `build/Psst.app` y volver a abrirla) para que Fernando siempre pruebe la versión al día en su equipo.
+5. Actualiza `CHANGELOG.md` y añade `docs/releases/vX.Y.Z.md` en cada cambio de versión visible al usuario; sigue el formato de los releases anteriores.
+6. La CI de GitHub Actions valida build universal (arm64+x86_64) y entitlements en cada push — no la saltes ni la debilites.
+7. No hagas commit, push, tag de release ni publicación de Release en GitHub sin confirmación explícita de Fernando para ese cambio concreto.
+8. Antes de cualquier push, ejecuta Gitleaks con redacción total; este proyecto no debería tener secretos nunca (sin backend, sin red), así que cualquier hallazgo es señal de un error grave.
+9. Proyecto clasificado como publicación en GitHub (repo público, releases, CI) pero sin despliegue en servidor propio — no aplica `production-deploy`/cPanel.
 
 # Estilo Editorial
 
