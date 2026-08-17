@@ -155,7 +155,7 @@ struct ContentView: View {
         switch silence.focusMode {
         case .hard: return "Ultra Focus activo"
         case .soft: return "Concentración activa"
-        case .normal: return "Modo biblioteca activo"
+        case .normal: return "Modo Biblioteca activo"
         }
     }
 }
@@ -206,7 +206,7 @@ struct MenuBarView: View {
 
             Divider()
 
-            modeItem(.normal, title: "Modo biblioteca")
+            modeItem(.normal, title: "Modo Biblioteca")
             modeItem(.soft, title: "Concentración (Soft Mode)")
             modeItem(.hard, title: "Ultra Focus (Hard Mode)")
 
@@ -248,7 +248,7 @@ struct MenuBarView: View {
         switch silence.focusMode {
         case .hard: return "Ultra Focus activo"
         case .soft: return "Concentración activa"
-        case .normal: return "Modo biblioteca activo"
+        case .normal: return "Modo Biblioteca activo"
         }
     }
 }

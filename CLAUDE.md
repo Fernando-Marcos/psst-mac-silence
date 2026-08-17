@@ -1,6 +1,6 @@
 # Propósito
 
-- Psst es una utilidad nativa de macOS (13+) que silencia de forma reversible las salidas de audio compatibles con tres modos mutuamente excluyentes: biblioteca (silencio simple, sin vigilancia), Concentración/Soft Mode (silencia todo y pide permiso mediante un aviso antes de dejar sonar música o vídeo) y Ultra Focus/Hard Mode (vigilancia cada 400 ms que corrige cualquier intento de recuperar volumen sin dar opción a permitirlo).
+- Psst es una utilidad nativa de macOS (13+) que silencia de forma reversible las salidas de audio compatibles con tres modos mutuamente excluyentes: Biblioteca (silencio simple, sin vigilancia), Concentración/Soft Mode (silencia todo y pide permiso mediante un aviso antes de dejar sonar música o vídeo) y Ultra Focus/Hard Mode (vigilancia cada 400 ms que corrige cualquier intento de recuperar volumen sin dar opción a permitirlo).
 - Excelencia aquí significa: cero privilegios innecesarios, sandbox mínimo verificable, sin red ni recogida de datos, y comportamiento predecible al activar/desactivar (restaurar siempre el estado previo exacto).
 - Prioriza seguridad y transparencia sobre funcionalidad añadida. Cualquier cambio que amplíe la superficie de privilegios (Process, AppleScript, Apple Events, red, acceso a archivos del usuario) requiere justificación explícita y probablemente rompe el modelo de seguridad documentado en `docs/ARCHITECTURE.md`.
 - Publicado como binario universal (arm64 + x86_64) en GitHub Releases; no distribuido aún en Mac App Store (requeriría firma de distribución, perfil y revisión de Apple).
@@ -27,7 +27,7 @@
 # Orden de trabajo
 
 1. Antes de tocar audio/sandbox, lee `docs/ARCHITECTURE.md` para no romper el modelo de privilegios ni el flujo de activación/restauración.
-2. Cambios en `Sources/Psst/`, ejecuta `./Scripts/test.sh` (pruebas de modelos) antes de dar nada por terminado. Si tocas `SilenceController.swift`, verifica manualmente activar/desactivar y los tres modos (biblioteca, Concentración, Ultra Focus) en un Mac real — el comportamiento de Core Audio no es simulable en pruebas unitarias.
+2. Cambios en `Sources/Psst/`, ejecuta `./Scripts/test.sh` (pruebas de modelos) antes de dar nada por terminado. Si tocas `SilenceController.swift`, verifica manualmente activar/desactivar y los tres modos (Biblioteca, Concentración, Ultra Focus) en un Mac real — el comportamiento de Core Audio no es simulable en pruebas unitarias.
 3. Para verificar el build completo: `./Scripts/build-app.sh` y luego `codesign -dvvv --entitlements - build/Psst.app` para confirmar que el entitlement sigue siendo únicamente `app-sandbox`.
 4. Tras cada cambio que modifique `Sources/Psst/` y compile correctamente, sustituye la app instalada en `/Applications/Psst.app` por el build nuevo (cerrar la instancia en ejecución, borrar la anterior, copiar `build/Psst.app` y volver a abrirla) para que Fernando siempre pruebe la versión al día en su equipo.
 5. Actualiza `CHANGELOG.md` y añade `docs/releases/vX.Y.Z.md` en cada cambio de versión visible al usuario; sigue el formato de los releases anteriores.

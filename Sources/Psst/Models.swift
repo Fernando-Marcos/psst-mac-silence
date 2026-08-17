@@ -49,7 +49,7 @@ enum FocusMode: String {
 
     var displayName: String {
         switch self {
-        case .normal: return "modo biblioteca"
+        case .normal: return "modo Biblioteca"
         case .soft: return "Concentración"
         case .hard: return "Ultra Focus"
         }

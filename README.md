@@ -20,7 +20,7 @@
 
 <br>
 
-Psst es una utilidad nativa, pequeña y transparente para preparar el Mac antes de estudiar, opositar o trabajar en un espacio silencioso. Elige entre tres modos: 🏛️ **biblioteca** silencia una vez y no vigila nada más, 🎧 **Concentración (Soft Mode)** silencia todo y pide permiso antes de dejar sonar música o vídeo, y 🛡️ **Ultra Focus (Hard Mode)** bloquea el audio sin excepciones hasta que desactives Psst. Al desactivarla, restaura siempre el estado anterior de tu audio, tal cual estaba.
+Psst es una utilidad nativa, pequeña y transparente para preparar el Mac antes de estudiar, opositar o trabajar en un espacio silencioso. Elige entre tres modos: 🏛️ **Biblioteca** silencia una vez y no vigila nada más, 🎧 **Concentración** (Soft Mode) silencia todo y pide permiso antes de dejar sonar música o vídeo, y 🛡️ **Ultra Focus** (Hard Mode) bloquea el audio sin excepciones hasta que desactives Psst. Al desactivarla, restaura siempre el estado anterior de tu audio, tal cual estaba.
 
 <p align="center">
   <img src="docs/images/app-window-v1.4.0.png" width="460" alt="Ventana compacta y translúcida de Psst 1.4.0 con Concentración (Soft Mode) activado">
@@ -47,7 +47,7 @@ No pide contraseña de administrador, cuenta ni conexión a Internet. Es un úni
 ## Primeros pasos 🚀
 
 1. Abre Psst desde **Aplicaciones** o la barra de menús (el icono de altavoz).
-2. Elige el modo antes de activar: dos interruptores debajo del botón principal, **Ultra Focus** y **Concentración**. Si dejas ambos apagados, se activa el modo biblioteca. Solo puedes cambiarlos con Psst inactivo.
+2. Elige el modo antes de activar: dos interruptores debajo del botón principal, **Ultra Focus** y **Concentración**. Si dejas ambos apagados, se activa el modo **Biblioteca**. Solo puedes cambiarlos con Psst inactivo.
 3. Pulsa el botón grande **ACTIVAR**. Psst guarda tu volumen actual y silencia el equipo al instante.
 4. Cuando termines, pulsa **DESACTIVAR**. Psst restaura exactamente el volumen y el estado de silencio que tenías antes de activarla.
 
@@ -67,7 +67,7 @@ Los tres modos son excluyentes entre sí y solo pueden cambiarse con Psst inacti
 <summary><strong>🎧 Concentración (Soft Mode) en detalle</strong></summary>
 <br>
 
-- Al activar Psst, silencia todas las salidas compatibles, igual que el modo biblioteca.
+- Al activar Psst, silencia todas las salidas compatibles, igual que el modo Biblioteca.
 - Comprueba la actividad de audio cada 400 ms, igual que Ultra Focus.
 - Cuando detecta un intento de reproducir sonido, lo mantiene en silencio y muestra un aviso pidiendo permiso antes de que se oiga nada.
 - Si lo permites, Psst restaura el audio y deja de vigilarlo hasta que desactives la app; si eliges mantener el silencio, sigue bloqueando futuros intentos como Ultra Focus.
@@ -108,7 +108,7 @@ Los tres modos son excluyentes entre sí y solo pueden cambiarse con Psst inacti
 
 ### Para bibliotecas y espacios compartidos 🏛️
 
-- El modo biblioteca aplica un silencio reversible sin vigilancia continua.
+- El modo Biblioteca aplica un silencio reversible sin vigilancia continua.
 - Ultra Focus mantiene silenciadas las salidas compatibles mediante Core Audio durante toda la sesión.
 - Concentración silencia el equipo pero permite escuchar música o vídeo con auriculares tras confirmarlo en un aviso.
 - Ayuda a evitar interrupciones involuntarias sin tocar el control térmico del equipo.
@@ -140,7 +140,7 @@ Psst no baja directamente las revoluciones de los ventiladores. Apple no publica
 <summary><strong>¿Por qué macOS dice que Psst es de un "desarrollador no identificado"?</strong></summary>
 <br>
 
-Porque se distribuye con firma ad hoc en lugar de pasar por la notarización de pago de Apple. El código fuente es público: puedes revisarlo o compilarlo tú mismo (ver [Compilar desde el código fuente](#compilar-desde-el-código-fuente)) antes de confiar en el binario descargado.
+Porque se distribuye con firma ad hoc en lugar de pasar por la notarización de Apple, que exige una cuenta de desarrollador de pago. El código fuente es público: puedes revisarlo o compilarlo tú mismo (ver [Compilar desde el código fuente](#compilar-desde-el-código-fuente)) antes de confiar en el binario descargado.
 </details>
 
 <details>

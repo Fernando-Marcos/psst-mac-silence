@@ -189,7 +189,7 @@ final class SilenceController: ObservableObject {
         case .soft:
             return "Concentración silencia el equipo y te avisa antes de dejar sonar música o vídeo."
         case .normal:
-            return "Audio silenciado. Modo biblioteca sin vigilancia continua."
+            return "Audio silenciado. Modo Biblioteca sin vigilancia continua."
         }
     }
 

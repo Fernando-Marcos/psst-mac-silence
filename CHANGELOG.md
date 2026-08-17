@@ -4,7 +4,7 @@
 
 - Añade **Concentración (Soft Mode)**: silencia todo el equipo y pide permiso mediante un aviso antes de dejar sonar música, podcast o vídeo con auriculares.
 - El permiso concedido en Concentración dura hasta desactivar Psst; mantener el silencio conserva la vigilancia como en Ultra Focus.
-- Los tres modos (biblioteca, Concentración, Ultra Focus) pasan a ser mutuamente excluyentes.
+- Los tres modos (Biblioteca, Concentración, Ultra Focus) pasan a ser mutuamente excluyentes.
 - Elimina la integración con Atajos (automatización de No molestar y Bajo consumo): reducía la superficie del proyecto sin aportar al nuevo modelo de modos.
 - Actualiza el pie de la ventana principal a "Silencio para concentrarte. Respeto para no molestar."
 - Corrige textos de la interfaz que seguían mencionando únicamente "modo biblioteca" (subtítulo, etiqueta de accesibilidad del botón principal y menú de la barra de menús) para que reflejen el modo realmente seleccionado.
@@ -12,6 +12,7 @@
 - Sustituye el icono de la app por un nuevo diseño (altavoz silenciado en degradado azul-violeta); se genera ahora desde un PNG maestro (`docs/images/app-icon.png`) con `Scripts/build-icon.sh` en lugar de dibujarse por código.
 - Rediseña el README con mejor jerarquía visual, primeros pasos, preguntas frecuentes, casos de uso para trabajadores/coworkers y datos de contacto del autor.
 - El menú de la barra de menús permite elegir cualquiera de los tres modos (con marca de verificación en el seleccionado) y activarlo o desactivarlo sin necesidad de abrir la ventana principal.
+- Escribe **Biblioteca** con mayúscula inicial allá donde nombra el modo, igual que Concentración y Ultra Focus.
 
 ## [1.3.0] - 2026-08-17
 
