@@ -36,6 +36,7 @@ struct ContentView: View {
                 silenceButton
                 statusCard
                 optionsCard
+                Spacer(minLength: 10)
                 safetyFooter
             }
             .padding(.horizontal, 22)
@@ -64,7 +65,7 @@ struct ContentView: View {
                 .font(.system(size: 24, weight: .light))
                 .foregroundStyle(silence.isActive ? .mint : .cyan)
             Text("Psst").font(.system(size: 34, weight: .bold, design: .rounded))
-            Text("Tu Mac, en modo biblioteca").font(.subheadline).foregroundStyle(.secondary)
+            Text("El silencio que tú eliges").font(.subheadline).foregroundStyle(.secondary)
         }
     }
 
@@ -87,7 +88,9 @@ struct ContentView: View {
         .buttonStyle(.plain)
         .disabled(silence.isBusy)
         .opacity(silence.isBusy ? 0.55 : 1)
-        .accessibilityLabel(silence.isActive ? "Desactivar modo biblioteca" : "Activar modo biblioteca")
+        .accessibilityLabel(silence.isActive
+            ? "Desactivar \(silence.focusMode.displayName)"
+            : "Activar \(silence.focusMode.displayName)")
     }
 
     private var statusCard: some View {
@@ -200,7 +203,7 @@ struct MenuBarView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(silence.isActive ? statusTitle : "Psst está en espera")
                 .font(.headline)
-            Button(silence.isActive ? "Desactivar" : "Activar modo biblioteca") {
+            Button(silence.isActive ? "Desactivar" : "Activar \(silence.focusMode.displayName)") {
                 Task { await silence.toggle() }
             }
             .disabled(silence.isBusy)

@@ -17,9 +17,9 @@ struct PsstApp: App {
                 Button("Acerca de Psst") {
                     NSApplication.shared.orderFrontStandardAboutPanel(options: [
                         .applicationName: "Psst",
-                        .applicationVersion: "1.3.0",
+                        .applicationVersion: "1.4.0",
                         .credits: NSAttributedString(
-                            string: "Silencio seguro para estudiar y trabajar sin molestar.",
+                            string: "Silencio para concentrarte. Respeto para no molestar.",
                             attributes: [.foregroundColor: NSColor.secondaryLabelColor]
                         )
                     ])

@@ -7,6 +7,8 @@
 - Los tres modos (biblioteca, Concentración, Ultra Focus) pasan a ser mutuamente excluyentes.
 - Elimina la integración con Atajos (automatización de No molestar y Bajo consumo): reducía la superficie del proyecto sin aportar al nuevo modelo de modos.
 - Actualiza el pie de la ventana principal a "Silencio para concentrarte. Respeto para no molestar."
+- Corrige textos de la interfaz que seguían mencionando únicamente "modo biblioteca" (subtítulo, etiqueta de accesibilidad del botón principal y menú de la barra de menús) para que reflejen el modo realmente seleccionado.
+- Corrige la versión mostrada en "Acerca de Psst", que seguía en 1.3.0.
 
 ## [1.3.0] - 2026-08-17
 
