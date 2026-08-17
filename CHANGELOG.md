@@ -1,5 +1,12 @@
 # Historial de cambios
 
+## [1.3.0] - 2026-08-17
+
+- Presenta el bloqueo continuo como el modo opcional **Ultra Focus (Hard Mode)**.
+- Añade un interruptor visible que solo puede modificarse con Psst inactivo.
+- Distingue claramente el estado, los avisos y la documentación del modo normal.
+- Conserva Ultra Focus activado por defecto para no rebajar la protección existente.
+
 ## [1.2.0] - 2026-08-17
 
 - Bloqueo continuo del volumen y mute mientras el modo biblioteca permanece activo.
