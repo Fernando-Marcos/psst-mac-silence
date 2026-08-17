@@ -32,6 +32,12 @@ struct ContentView: View {
         .preferredColorScheme(.dark)
         .background(WindowGlassConfigurator())
         .sheet(isPresented: $showingAutomationHelp) { AutomationHelpView() }
+        .alert("Audio bloqueado por Psst", isPresented: $silence.isShowingBlockedNotice) {
+            Button("Mantener silencio", role: .cancel) {}
+            Button("Desactivar Psst") { Task { await silence.toggle() } }
+        } message: {
+            Text("Psst está ejecutando el modo biblioteca. El audio seguirá bloqueado hasta que desactives la aplicación.")
+        }
     }
 
     private var header: some View {
@@ -89,7 +95,17 @@ struct ContentView: View {
 
     private var optionsCard: some View {
         VStack(spacing: 0) {
-            CompactOptionRow(icon: "speaker.slash", title: "Silenciar audio y avisos", isOn: $silence.muteAudio)
+            HStack(spacing: 11) {
+                Image(systemName: "lock.fill").frame(width: 24).foregroundStyle(.mint)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Bloqueo continuo de audio").font(.subheadline.weight(.medium))
+                    Text("Impide recuperar el sonido mientras esté activo")
+                        .font(.caption2).foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 13)
+            .frame(height: 51)
             Divider().opacity(0.22).padding(.leading, 45)
             HStack(spacing: 11) {
                 Image(systemName: "moon.zzz").frame(width: 24).foregroundStyle(.cyan)
@@ -113,23 +129,6 @@ struct ContentView: View {
     private var safetyFooter: some View {
         Label("Sandbox de Apple · sin contraseña ni acceso a tus archivos", systemImage: "lock.shield.fill")
             .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
-    }
-}
-
-private struct CompactOptionRow: View {
-    let icon: String
-    let title: String
-    @Binding var isOn: Bool
-
-    var body: some View {
-        HStack(spacing: 11) {
-            Image(systemName: icon).frame(width: 24).foregroundStyle(.cyan)
-            Text(title).font(.subheadline.weight(.medium))
-            Spacer()
-            Toggle("", isOn: $isOn).labelsHidden().controlSize(.small)
-        }
-        .padding(.horizontal, 13)
-        .frame(height: 42)
     }
 }
 
