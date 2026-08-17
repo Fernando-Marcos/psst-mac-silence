@@ -203,11 +203,22 @@ struct MenuBarView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(silence.isActive ? statusTitle : "Psst está en espera")
                 .font(.headline)
+
+            Divider()
+
+            modeItem(.normal, title: "Modo biblioteca")
+            modeItem(.soft, title: "Concentración (Soft Mode)")
+            modeItem(.hard, title: "Ultra Focus (Hard Mode)")
+
+            Divider()
+
             Button(silence.isActive ? "Desactivar" : "Activar \(silence.focusMode.displayName)") {
                 Task { await silence.toggle() }
             }
             .disabled(silence.isBusy)
+
             Divider()
+
             Button("Abrir Psst") {
                 openWindow(id: "main")
                 NSApplication.shared.activate(ignoringOtherApps: true)
@@ -215,6 +226,22 @@ struct MenuBarView: View {
             Button("Salir") { NSApplication.shared.terminate(nil) }
         }
         .padding(4)
+    }
+
+    @ViewBuilder
+    private func modeItem(_ mode: FocusMode, title: String) -> some View {
+        Button {
+            silence.focusMode = mode
+        } label: {
+            HStack {
+                Text(title)
+                if silence.focusMode == mode {
+                    Spacer()
+                    Image(systemName: "checkmark")
+                }
+            }
+        }
+        .disabled(silence.isActive || silence.isBusy)
     }
 
     private var statusTitle: String {
