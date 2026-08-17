@@ -5,10 +5,9 @@ import SwiftUI
 final class SilenceController: ObservableObject {
     @Published var isActive: Bool
     @Published var isBusy = false
-    @Published var statusMessage = "Silencia el Mac con un solo toque."
-    @Published var focusAutomationAvailable = FocusService.isAvailable()
+    @Published var statusMessage = "Silencia el Mac con un toque."
     @AppStorage("muteAudio") var muteAudio = true
-    @AppStorage("reduceHeat") var reduceHeat = true
+    @AppStorage("runAutomation") var runAutomation = false
 
     private let activeKey = "silenceModeActive"
     private let snapshotURL: URL
@@ -19,71 +18,48 @@ final class SilenceController: ObservableObject {
             .appendingPathComponent("Psst", isDirectory: true)
         try? FileManager.default.createDirectory(at: support, withIntermediateDirectories: true)
         snapshotURL = support.appendingPathComponent("restore-state.json")
-        if isActive {
-            statusMessage = "Los ajustes siguen activos desde la última sesión."
-        }
+        if isActive { statusMessage = "El modo biblioteca sigue activo." }
     }
 
     func toggle() async {
         guard !isBusy else { return }
         isBusy = true
         defer { isBusy = false }
-        if isActive {
-            await deactivate()
-        } else {
-            await activate()
-        }
+        if isActive { deactivate() } else { activate() }
     }
 
-    private func activate() async {
+    private func activate() {
         var warnings: [String] = []
-        let audioSnapshot = muteAudio ? try? AudioService.capture() : nil
-        let powerSnapshot = reduceHeat ? try? PowerService.capture() : nil
-        save(SilenceSnapshot(audio: audioSnapshot, power: powerSnapshot))
-
         if muteAudio {
-            do { try AudioService.silence() }
-            catch { warnings.append("audio: \(error.localizedDescription)") }
+            do {
+                let snapshot = try AudioService.capture()
+                save(snapshot)
+                try AudioService.silence()
+            } catch { warnings.append(error.localizedDescription) }
         }
-        if reduceHeat {
-            do { try PowerService.reduceHeat() }
-            catch { warnings.append("energía: \(clean(error.localizedDescription))") }
+        if runAutomation && !AutomationService.run(active: true) {
+            warnings.append("No se pudo abrir Atajos.")
         }
-
-        focusAutomationAvailable = FocusService.isAvailable()
-        if focusAutomationAvailable {
-            do { try FocusService.activate() }
-            catch { warnings.append("Concentración: \(clean(error.localizedDescription))") }
-        }
-
         isActive = true
         UserDefaults.standard.set(true, forKey: activeKey)
         statusMessage = warnings.isEmpty
-            ? (focusAutomationAvailable ? "Audio, concentración y consumo reducidos." : "Audio y consumo reducidos. Configura Concentración para bloquear notificaciones.")
-            : "Activo con aviso: \(warnings.joined(separator: " · "))"
+            ? (runAutomation ? "Audio silenciado y automatización iniciada." : "Audio y avisos del sistema silenciados.")
+            : warnings.joined(separator: " · ")
     }
 
-    private func deactivate() async {
+    private func deactivate() {
         var warnings: [String] = []
-        let snapshot = load()
-
-        if let audio = snapshot?.audio {
-            do { try AudioService.restore(audio) }
-            catch { warnings.append("audio: \(error.localizedDescription)") }
+        if let snapshot = load() {
+            do { try AudioService.restore(snapshot) }
+            catch { warnings.append(error.localizedDescription) }
         }
-        if let power = snapshot?.power {
-            do { try PowerService.restore(power) }
-            catch { warnings.append("energía: \(clean(error.localizedDescription))") }
+        if runAutomation && !AutomationService.run(active: false) {
+            warnings.append("No se pudo abrir Atajos.")
         }
-        if FocusService.isAvailable() {
-            do { try FocusService.deactivate() }
-            catch { warnings.append("Concentración: \(clean(error.localizedDescription))") }
-        }
-
         isActive = false
         UserDefaults.standard.set(false, forKey: activeKey)
         try? FileManager.default.removeItem(at: snapshotURL)
-        statusMessage = warnings.isEmpty ? "Ajustes anteriores restaurados." : "Desactivado con aviso: \(warnings.joined(separator: " · "))"
+        statusMessage = warnings.isEmpty ? "Ajustes de audio restaurados." : warnings.joined(separator: " · ")
     }
 
     private func save(_ snapshot: SilenceSnapshot) {
@@ -95,9 +71,5 @@ final class SilenceController: ObservableObject {
     private func load() -> SilenceSnapshot? {
         guard let data = try? Data(contentsOf: snapshotURL) else { return nil }
         return try? JSONDecoder().decode(SilenceSnapshot.self, from: data)
-    }
-
-    private func clean(_ message: String) -> String {
-        message.replacingOccurrences(of: "execution error: ", with: "")
     }
 }

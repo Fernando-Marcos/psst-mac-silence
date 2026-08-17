@@ -10,7 +10,7 @@ ARCH_DIR="$BUILD_DIR/architectures"
 cd "$PROJECT_DIR"
 mkdir -p "$ARCH_DIR"
 
-COMMON_FLAGS=(-swift-version 5 -parse-as-library -O -framework SwiftUI -framework AppKit)
+COMMON_FLAGS=(-swift-version 5 -parse-as-library -O -framework SwiftUI -framework AppKit -framework CoreAudio)
 swiftc "${COMMON_FLAGS[@]}" -target x86_64-apple-macosx13.0 Sources/Psst/*.swift -o "$ARCH_DIR/Psst-x86_64"
 swiftc "${COMMON_FLAGS[@]}" -target arm64-apple-macosx13.0 Sources/Psst/*.swift -o "$ARCH_DIR/Psst-arm64"
 lipo -create "$ARCH_DIR/Psst-x86_64" "$ARCH_DIR/Psst-arm64" -output "$ARCH_DIR/Psst"
@@ -23,5 +23,5 @@ if [[ -f "$PROJECT_DIR/Resources/AppIcon.icns" ]]; then
   cp "$PROJECT_DIR/Resources/AppIcon.icns" "$APP_DIR/Contents/Resources/AppIcon.icns"
 fi
 
-codesign --force --deep --sign - "$APP_DIR"
+codesign --force --deep --options runtime --entitlements "$PROJECT_DIR/Resources/Psst.entitlements" --sign - "$APP_DIR"
 echo "$APP_DIR"

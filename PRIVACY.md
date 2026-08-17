@@ -1,19 +1,19 @@
 # Privacidad
 
-Psst está diseñado para funcionar íntegramente en el Mac.
+Psst funciona íntegramente en el Mac y aplica minimización de datos desde el diseño.
 
 ## Datos que no recopila
 
-Psst no incluye cuentas de usuario, publicidad, analítica, rastreadores, telemetría ni servicios remotos. No transmite información por Internet.
+No incluye cuentas, publicidad, analítica, telemetría, rastreadores ni servicios remotos. La app no tiene entitlement de red y no transmite información por Internet.
 
 ## Datos locales
 
-Al activar el modo biblioteca, la app guarda localmente una instantánea mínima de los ajustes que necesita restaurar. Se almacena dentro del contenedor de datos de la aplicación y se elimina después de una restauración correcta.
+Al activar el silencio, Psst guarda una instantánea mínima del volumen y mute necesarios para restaurar el audio. El archivo permanece dentro del contenedor privado asignado por App Sandbox y se elimina al desactivar el modo.
 
-## Autorización de administrador
+## Permisos
 
-Algunos ajustes energéticos requieren autorización. La contraseña se introduce en el diálogo seguro proporcionado por macOS y se entrega directamente al sistema. Psst no la recibe, no puede leerla y no la almacena.
+La app solo declara `com.apple.security.app-sandbox`. No solicita acceso a archivos del usuario, cámara, micrófono, ubicación, contactos, calendarios, Bluetooth, USB, red ni Apple Events. Tampoco pide una contraseña de administrador.
 
 ## Atajos
 
-La integración opcional con No molestar solo ejecuta los dos atajos locales descritos en el README. Psst no lee su contenido ni accede a datos personales de otras aplicaciones.
+La integración opcional abre, a petición del usuario, dos nombres de atajo mediante el esquema oficial `shortcuts://`. Psst no enumera ni lee los atajos y no accede a sus datos.

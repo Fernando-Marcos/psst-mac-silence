@@ -29,6 +29,7 @@ jobs:
         run: |
           plutil -lint build/Psst.app/Contents/Info.plist
           codesign --verify --deep --strict build/Psst.app
+          test "$(codesign -d --entitlements :- build/Psst.app 2>/dev/null | plutil -extract 'com\.apple\.security\.app-sandbox' raw -o - -)" = "true"
           lipo build/Psst.app/Contents/MacOS/Psst -verify_arch x86_64 arm64
 
       - name: Package application
