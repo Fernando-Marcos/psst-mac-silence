@@ -52,6 +52,45 @@ enum AudioService {
         guard changed else { throw SystemServiceError.audioChangeRejected }
     }
 
+    static func enforcementState() throws -> AudioEnforcementState {
+        var needsSilencing = false
+        var isOutputRunning = false
+
+        for device in try defaultDevices() {
+            var running: UInt32 = 0
+            if get(
+                &running,
+                object: device,
+                selector: kAudioDevicePropertyDeviceIsRunningSomewhere,
+                scope: kAudioObjectPropertyScopeGlobal,
+                element: kAudioObjectPropertyElementMain
+            ) {
+                isOutputRunning = isOutputRunning || running != 0
+            }
+
+            for element in elements {
+                var volume: Float32 = 0
+                if isSettable(device: device, selector: kAudioDevicePropertyVolumeScalar, element: element),
+                   get(&volume, object: device, selector: kAudioDevicePropertyVolumeScalar, scope: kAudioDevicePropertyScopeOutput, element: element),
+                   volume > 0.0001 {
+                    needsSilencing = true
+                }
+
+                var muted: UInt32 = 1
+                if isSettable(device: device, selector: kAudioDevicePropertyMute, element: element),
+                   get(&muted, object: device, selector: kAudioDevicePropertyMute, scope: kAudioDevicePropertyScopeOutput, element: element),
+                   muted == 0 {
+                    needsSilencing = true
+                }
+            }
+        }
+
+        return AudioEnforcementState(
+            needsSilencing: needsSilencing,
+            isOutputRunning: isOutputRunning
+        )
+    }
+
     static func restore(_ snapshot: SilenceSnapshot) throws {
         var changed = false
         for device in snapshot.devices {

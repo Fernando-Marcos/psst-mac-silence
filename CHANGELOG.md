@@ -1,5 +1,13 @@
 # Historial de cambios
 
+## [1.2.0] - 2026-08-17
+
+- Bloqueo continuo del volumen y mute mientras el modo biblioteca permanece activo.
+- Detección local de actividad en la salida mediante la API pública Core Audio.
+- Aviso visible ante actividad de audio o intentos de recuperar el volumen.
+- Restauración reversible ampliada para salidas conectadas durante una sesión.
+- Documentación clara sobre privacidad, compatibilidad y límites técnicos.
+
 ## [1.1.0] - 2026-08-17
 
 - Rediseño compacto de 468 × 500 puntos, sin desplazamiento y con material translúcido nativo.

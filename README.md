@@ -12,17 +12,17 @@
   ![App Sandbox](https://img.shields.io/badge/Apple-App%20Sandbox-success?logo=apple)
 </div>
 
-Psst es una utilidad nativa, pequeña y transparente para preparar el Mac antes de estudiar, opositar o trabajar en un espacio silencioso. Un botón silencia la salida y los avisos del sistema; otro toque restaura el estado anterior.
+Psst es una utilidad nativa, pequeña y transparente para preparar el Mac antes de estudiar, opositar o trabajar en un espacio silencioso. Mientras el modo biblioteca está activo, mantiene bloqueada la salida de audio, corrige cualquier intento de recuperar el volumen y muestra un aviso; al desactivarlo restaura el estado anterior.
 
 <p align="center">
-  <img src="docs/images/app-window-v1.1.0.png" width="468" alt="Ventana compacta y translúcida de Psst 1.1.0">
+  <img src="docs/images/app-window-v1.2.0.png" width="468" alt="Ventana compacta y translúcida de Psst 1.2.0">
 </p>
 
 ## Por qué instalar Psst
 
 ### Para estudiantes
 
-- Evita que un vídeo, una web o una alerta suenen por accidente en clase o en la biblioteca.
+- Evita que Spotify, un vídeo, una web o una alerta recuperen el sonido por accidente en clase o en la biblioteca.
 - Convierte el inicio de una sesión de estudio en un ritual inmediato y fácil de recordar.
 - Ocupa poco espacio, permanece accesible en la barra de menús y no añade distracciones.
 
@@ -34,7 +34,8 @@ Psst es una utilidad nativa, pequeña y transparente para preparar el Mac antes 
 
 ### Para bibliotecas y espacios compartidos
 
-- Silencia las salidas de audio compatibles y los sonidos del sistema mediante Core Audio.
+- Mantiene silenciadas las salidas compatibles y los sonidos del sistema mediante Core Audio durante toda la sesión.
+- Avisa si detecta actividad de audio o un intento de volver a subir el volumen.
 - Ayuda a evitar interrupciones involuntarias sin tocar el control térmico del equipo.
 - No necesita contraseña de administrador, cuenta, Internet ni procesos en segundo plano fuera de la app.
 
@@ -50,6 +51,8 @@ La ventana fija mide 468 × 500 puntos con el marco de macOS: es prácticamente 
 - Audio controlado con la API pública **Core Audio**.
 - Automatización opcional iniciada por el usuario con el esquema oficial `shortcuts://`.
 - Estado reversible guardado exclusivamente en el contenedor privado de la app.
+
+Psst bloquea el **sonido audible** de la salida predeterminada compatible. Por seguridad y privacidad no inspecciona ni controla el reproductor de Spotify, el navegador o una app de vídeo: su reproducción puede avanzar sin que se oiga nada. Algunas salidas digitales o externas que no permiten volumen o mute por software quedan fuera del control de cualquier app sandboxed; Psst lo comunica si no puede silenciarlas.
 
 La configuración cumple la base técnica del sandbox exigido por Apple. Una publicación en Mac App Store todavía requiere firma de distribución, perfil, ficha de App Store Connect y revisión de Apple.
 
