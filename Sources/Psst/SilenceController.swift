@@ -9,6 +9,7 @@ final class SilenceController: ObservableObject {
     @Published var isShowingBlockedNotice = false
     @Published var statusMessage = "Silencia el Mac con un toque."
     @AppStorage("runAutomation") var runAutomation = false
+    @AppStorage("ultraFocusEnabled") var ultraFocusEnabled = true
 
     private let activeKey = "silenceModeActive"
     private let snapshotURL: URL
@@ -23,7 +24,9 @@ final class SilenceController: ObservableObject {
         try? FileManager.default.createDirectory(at: support, withIntermediateDirectories: true)
         snapshotURL = support.appendingPathComponent("restore-state.json")
         if isActive {
-            statusMessage = "El bloqueo continuo sigue activo."
+            statusMessage = ultraFocusEnabled
+                ? "Ultra Focus sigue protegiendo el silencio."
+                : "El modo biblioteca sigue activo."
             Task { @MainActor [weak self] in self?.resumeEnforcement() }
         }
     }
@@ -50,10 +53,12 @@ final class SilenceController: ObservableObject {
         }
         isActive = true
         UserDefaults.standard.set(true, forKey: activeKey)
-        wasAudioRunning = (try? AudioService.enforcementState().isOutputRunning) ?? false
-        startEnforcement()
+        if ultraFocusEnabled {
+            wasAudioRunning = (try? AudioService.enforcementState().isOutputRunning) ?? false
+            startEnforcement()
+        }
         statusMessage = warnings.isEmpty
-            ? (runAutomation ? "Bloqueo continuo y automatización activos." : "Audio bloqueado hasta que desactives Psst.")
+            ? activationMessage
             : warnings.joined(separator: " · ")
     }
 
@@ -79,7 +84,7 @@ final class SilenceController: ObservableObject {
         }
         try? AudioService.silence()
         wasAudioRunning = false
-        startEnforcement()
+        if ultraFocusEnabled { startEnforcement() }
     }
 
     private func startEnforcement() {
@@ -125,10 +130,21 @@ final class SilenceController: ObservableObject {
         let now = Date()
         guard now.timeIntervalSince(lastNoticeDate) >= 6 else { return }
         lastNoticeDate = now
-        statusMessage = "Intento de audio bloqueado. Desactiva Psst para escuchar."
+        statusMessage = "Ultra Focus ha bloqueado un intento de audio."
         isShowingBlockedNotice = true
         NSApplication.shared.activate(ignoringOtherApps: true)
         NSApplication.shared.windows.first(where: { $0.canBecomeKey })?.makeKeyAndOrderFront(nil)
+    }
+
+    private var activationMessage: String {
+        if ultraFocusEnabled {
+            return runAutomation
+                ? "Ultra Focus y automatización activos."
+                : "Ultra Focus bloquea el audio hasta que desactives Psst."
+        }
+        return runAutomation
+            ? "Silencio y automatización activos."
+            : "Audio silenciado. Ultra Focus está desactivado."
     }
 
     private func save(_ snapshot: SilenceSnapshot) {

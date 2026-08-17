@@ -32,11 +32,11 @@ struct ContentView: View {
         .preferredColorScheme(.dark)
         .background(WindowGlassConfigurator())
         .sheet(isPresented: $showingAutomationHelp) { AutomationHelpView() }
-        .alert("Audio bloqueado por Psst", isPresented: $silence.isShowingBlockedNotice) {
+        .alert("Audio bloqueado por Ultra Focus", isPresented: $silence.isShowingBlockedNotice) {
             Button("Mantener silencio", role: .cancel) {}
             Button("Desactivar Psst") { Task { await silence.toggle() } }
         } message: {
-            Text("Psst está ejecutando el modo biblioteca. El audio seguirá bloqueado hasta que desactives la aplicación.")
+            Text("Ultra Focus (Hard Mode) está activo. El audio seguirá bloqueado hasta que desactives Psst.")
         }
     }
 
@@ -81,7 +81,9 @@ struct ContentView: View {
                     .foregroundStyle(silence.isActive ? .mint : .secondary)
             }
             VStack(alignment: .leading, spacing: 1) {
-                Text(silence.isActive ? "Modo biblioteca activo" : "Listo para guardar silencio")
+                Text(silence.isActive
+                    ? (silence.ultraFocusEnabled ? "Ultra Focus activo" : "Modo biblioteca activo")
+                    : "Listo para guardar silencio")
                     .font(.subheadline.weight(.semibold))
                 Text(silence.statusMessage)
                     .font(.caption).foregroundStyle(.secondary).lineLimit(2)
@@ -96,13 +98,14 @@ struct ContentView: View {
     private var optionsCard: some View {
         VStack(spacing: 0) {
             HStack(spacing: 11) {
-                Image(systemName: "lock.fill").frame(width: 24).foregroundStyle(.mint)
+                Image(systemName: "bolt.shield.fill").frame(width: 24).foregroundStyle(.orange)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Bloqueo continuo de audio").font(.subheadline.weight(.medium))
-                    Text("Impide recuperar el sonido mientras esté activo")
+                    Text("Ultra Focus (Hard Mode)").font(.subheadline.weight(.semibold))
+                    Text("Bloquea cualquier intento de recuperar el audio")
                         .font(.caption2).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
+                Toggle("", isOn: $silence.ultraFocusEnabled).labelsHidden().controlSize(.small)
             }
             .padding(.horizontal, 13)
             .frame(height: 51)
@@ -200,7 +203,10 @@ struct MenuBarView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(silence.isActive ? "Modo biblioteca activo" : "Psst está en espera").font(.headline)
+            Text(silence.isActive
+                ? (silence.ultraFocusEnabled ? "Ultra Focus activo" : "Modo biblioteca activo")
+                : "Psst está en espera")
+                .font(.headline)
             Button(silence.isActive ? "Desactivar" : "Activar modo biblioteca") {
                 Task { await silence.toggle() }
             }
