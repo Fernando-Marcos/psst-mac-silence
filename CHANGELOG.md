@@ -12,6 +12,7 @@
 - Sustituye el icono de la app por un nuevo diseño (altavoz silenciado en degradado azul-violeta); se genera ahora desde un PNG maestro (`docs/images/app-icon.png`) con `Scripts/build-icon.sh` en lugar de dibujarse por código.
 - Rediseña el README con mejor jerarquía visual, primeros pasos, preguntas frecuentes, casos de uso para trabajadores/coworkers y datos de contacto del autor.
 - El menú de la barra de menús permite elegir cualquiera de los tres modos (con marca de verificación en el seleccionado) y activarlo o desactivarlo sin necesidad de abrir la ventana principal.
+- Elegir un modo en el menú de la barra lo activa al instante si Psst estaba inactiva, sin pulsar un botón aparte.
 - Escribe **Biblioteca** con mayúscula inicial allá donde nombra el modo, igual que Concentración y Ultra Focus.
 
 ## [1.3.0] - 2026-08-17

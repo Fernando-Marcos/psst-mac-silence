@@ -232,6 +232,9 @@ struct MenuBarView: View {
     private func modeItem(_ mode: FocusMode, title: String) -> some View {
         Button {
             silence.focusMode = mode
+            if !silence.isActive {
+                Task { await silence.toggle() }
+            }
         } label: {
             HStack {
                 Text(title)
