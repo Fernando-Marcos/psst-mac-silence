@@ -9,6 +9,7 @@
 - Añade un icono con degradado animado sobre "Psst" (verde en reposo, rojo al silenciar) que indica si hay sonido; el barrido usa un patrón horizontal con periodo exacto para no dar saltos al reiniciarse.
 - Actualiza la captura del README a la interfaz de 1.5.0, con esquinas redondeadas para integrarse con el resto de imágenes del repositorio.
 - Sustituye el icono del pie de la ventana principal (candado con escudo) por un altavoz tachado, más identificativo de lo que hace la app, con el mismo tamaño y estilo que el texto que acompaña.
+- Colorea de verde menta el fondo del interruptor al activar Ultra Focus o Concentración, en lugar del azul por defecto de macOS.
 
 ## [1.4.0] - 2026-08-17
 

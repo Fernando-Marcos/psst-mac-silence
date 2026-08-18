@@ -181,7 +181,7 @@ struct ContentView: View {
                         .font(.caption2).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
-                Toggle("", isOn: hardModeBinding).labelsHidden().controlSize(.small)
+                Toggle("", isOn: hardModeBinding).labelsHidden().controlSize(.small).tint(.mint)
             }
             .padding(.horizontal, 13)
             .frame(height: 51)
@@ -194,7 +194,7 @@ struct ContentView: View {
                         .font(.caption2).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
-                Toggle("", isOn: softModeBinding).labelsHidden().controlSize(.small)
+                Toggle("", isOn: softModeBinding).labelsHidden().controlSize(.small).tint(.mint)
             }
             .padding(.horizontal, 13)
             .frame(height: 51)
