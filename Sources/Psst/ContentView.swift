@@ -204,7 +204,7 @@ struct ContentView: View {
     }
 
     private var safetyFooter: some View {
-        Label("Silencio para concentrarte. Respeto para no molestar.", systemImage: "lock.shield.fill")
+        Label("Silencio para concentrarte. Respeto para no molestar.", systemImage: "speaker.slash.fill")
             .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
     }
 

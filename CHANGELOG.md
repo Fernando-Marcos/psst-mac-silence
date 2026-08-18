@@ -8,6 +8,7 @@
 - Actualiza la versión mostrada en "Acerca de Psst" a 1.5.0.
 - Añade un icono con degradado animado sobre "Psst" (verde en reposo, rojo al silenciar) que indica si hay sonido; el barrido usa un patrón horizontal con periodo exacto para no dar saltos al reiniciarse.
 - Actualiza la captura del README a la interfaz de 1.5.0, con esquinas redondeadas para integrarse con el resto de imágenes del repositorio.
+- Sustituye el icono del pie de la ventana principal (candado con escudo) por un altavoz tachado, más identificativo de lo que hace la app, con el mismo tamaño y estilo que el texto que acompaña.
 
 ## [1.4.0] - 2026-08-17
 
