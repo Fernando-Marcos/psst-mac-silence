@@ -6,6 +6,8 @@
 - Añade un anillo animado y muy sutil alrededor del botón principal que gira sin pausa: verde menta en **ACTIVAR** (invita a pulsar) y rojo en **DESACTIVAR** (avisa de que al pulsar se detiene el silencio). Se implementa con un reloj continuo (`TimelineView`) para que nunca se quede congelado al alternar entre estados.
 - Rehace el panel **Acerca de Psst**: el eslogan pasa a dos líneas centradas ("Silencio para concentrarte." / "Respeto para no molestar.") y el nombre del autor en el aviso de copyright es ahora un enlace a fernandomarcos.com.
 - Actualiza la versión mostrada en "Acerca de Psst" a 1.5.0.
+- Añade un icono con degradado animado sobre "Psst" (verde en reposo, rojo al silenciar) que indica si hay sonido; el barrido usa un patrón horizontal con periodo exacto para no dar saltos al reiniciarse.
+- Actualiza la captura del README a la interfaz de 1.5.0, con esquinas redondeadas para integrarse con el resto de imágenes del repositorio.
 
 ## [1.4.0] - 2026-08-17
 

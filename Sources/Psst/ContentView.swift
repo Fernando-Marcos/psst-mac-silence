@@ -61,12 +61,48 @@ struct ContentView: View {
 
     private var header: some View {
         VStack(spacing: 2) {
-            Image(systemName: silence.isActive ? "speaker.slash.fill" : "speaker.wave.2.fill")
-                .font(.system(size: 24, weight: .light))
-                .foregroundStyle(silence.isActive ? .mint : .cyan)
+            if silence.isActive {
+                animatedHeaderIcon(systemName: "speaker.slash.fill", base: .red.opacity(0.55), highlight: Color(red: 1, green: 0.42, blue: 0.42))
+            } else {
+                animatedHeaderIcon(systemName: "speaker.wave.2.fill", base: .green.opacity(0.55), highlight: .mint)
+            }
             Text("Psst").font(.system(size: 34, weight: .bold, design: .rounded))
             Text("El silencio que tú eliges").font(.subheadline).foregroundStyle(.secondary)
         }
+    }
+
+    /// Degradado horizontal en bucle perfecto: la ventana visible avanza dos periodos completos
+    /// del patrón `base → highlight → base` (definido cada 1/6) y, al reiniciarse, cae exactamente
+    /// sobre una repetición idéntica del patrón, por lo que el barrido izquierda→derecha no da saltos.
+    private func animatedHeaderIcon(systemName: String, base: Color, highlight: Color) -> some View {
+        let stops: [Gradient.Stop] = [
+            .init(color: base, location: 0.0 / 6),
+            .init(color: highlight, location: 1.0 / 6),
+            .init(color: base, location: 2.0 / 6),
+            .init(color: highlight, location: 3.0 / 6),
+            .init(color: base, location: 4.0 / 6),
+            .init(color: highlight, location: 5.0 / 6),
+            .init(color: base, location: 6.0 / 6)
+        ]
+        let windowWidth = 1.0 / 3.0
+
+        return TimelineView(.animation) { timeline in
+            let duration = 3.4
+            let t = timeline.date.timeIntervalSinceReferenceDate
+                .truncatingRemainder(dividingBy: duration) / duration
+            let windowStart = t * (1 - windowWidth)
+
+            Image(systemName: systemName)
+                .font(.system(size: 24, weight: .light))
+                .foregroundStyle(
+                    LinearGradient(
+                        gradient: Gradient(stops: stops),
+                        startPoint: UnitPoint(x: windowStart, y: 0.5),
+                        endPoint: UnitPoint(x: windowStart + windowWidth, y: 0.5)
+                    )
+                )
+        }
+        .frame(width: 24, height: 24)
     }
 
     private var silenceButton: some View {
