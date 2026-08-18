@@ -1,5 +1,12 @@
 # Historial de cambios
 
+## [1.5.0] - 2026-08-18
+
+- Intercambia los iconos del botón principal: **ACTIVAR** ahora muestra el icono de silenciar y **DESACTIVAR** el de encendido, para que el icono anticipe la acción que vas a provocar en lugar del estado actual.
+- Añade un anillo animado y muy sutil alrededor del botón principal que gira sin pausa: verde menta en **ACTIVAR** (invita a pulsar) y rojo en **DESACTIVAR** (avisa de que al pulsar se detiene el silencio). Se implementa con un reloj continuo (`TimelineView`) para que nunca se quede congelado al alternar entre estados.
+- Rehace el panel **Acerca de Psst**: el eslogan pasa a dos líneas centradas ("Silencio para concentrarte." / "Respeto para no molestar.") y el nombre del autor en el aviso de copyright es ahora un enlace a fernandomarcos.com.
+- Actualiza la versión mostrada en "Acerca de Psst" a 1.5.0.
+
 ## [1.4.0] - 2026-08-17
 
 - Añade **Concentración (Soft Mode)**: silencia todo el equipo y pide permiso mediante un aviso antes de dejar sonar música, podcast o vídeo con auriculares.

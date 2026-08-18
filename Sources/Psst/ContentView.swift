@@ -72,18 +72,21 @@ struct ContentView: View {
     private var silenceButton: some View {
         Button { Task { await silence.toggle() } } label: {
             ZStack {
+                if !silence.isBusy {
+                    inviteRing(color: silence.isActive ? .red : .mint)
+                }
                 Circle()
                     .fill(silence.isActive ? Color.mint.opacity(0.18) : Color.white.opacity(0.09))
                     .overlay(Circle().stroke(Color.white.opacity(0.18), lineWidth: 1))
                     .shadow(color: silence.isActive ? .mint.opacity(0.15) : .black.opacity(0.18), radius: 18)
                 VStack(spacing: 7) {
-                    Image(systemName: silence.isActive ? "speaker.slash.fill" : "power")
+                    Image(systemName: silence.isActive ? "power" : "speaker.slash.fill")
                         .font(.system(size: 37, weight: .medium))
                     Text(silence.isActive ? "DESACTIVAR" : "ACTIVAR")
                         .font(.system(.subheadline, design: .rounded, weight: .bold))
                 }
             }
-            .frame(width: 122, height: 122)
+            .frame(width: 134, height: 134)
         }
         .buttonStyle(.plain)
         .disabled(silence.isBusy)
@@ -91,6 +94,24 @@ struct ContentView: View {
         .accessibilityLabel(silence.isActive
             ? "Desactivar \(silence.focusMode.displayName)"
             : "Activar \(silence.focusMode.displayName)")
+    }
+
+    private func inviteRing(color: Color) -> some View {
+        TimelineView(.animation) { timeline in
+            Circle()
+                .stroke(
+                    AngularGradient(
+                        colors: [.clear, color.opacity(0.85), .clear],
+                        center: .center
+                    ),
+                    style: StrokeStyle(lineWidth: 2, lineCap: .round)
+                )
+                .frame(width: 134, height: 134)
+                .rotationEffect(.degrees(
+                    timeline.date.timeIntervalSinceReferenceDate
+                        .truncatingRemainder(dividingBy: 3.2) / 3.2 * 360
+                ))
+        }
     }
 
     private var statusCard: some View {

@@ -15,13 +15,30 @@ struct PsstApp: App {
         .commands {
             CommandGroup(replacing: .appInfo) {
                 Button("Acerca de Psst") {
+                    let paragraphStyle = NSMutableParagraphStyle()
+                    paragraphStyle.alignment = .center
+
+                    let credits = NSMutableAttributedString(
+                        string: "Silencio para concentrarte.\nRespeto para no molestar.\n\n© 2026 ",
+                        attributes: [
+                            .foregroundColor: NSColor.secondaryLabelColor,
+                            .paragraphStyle: paragraphStyle
+                        ]
+                    )
+                    credits.append(NSAttributedString(
+                        string: "Fernando Marcos",
+                        attributes: [
+                            .foregroundColor: NSColor.linkColor,
+                            .link: URL(string: "https://fernandomarcos.com")!,
+                            .paragraphStyle: paragraphStyle
+                        ]
+                    ))
+
                     NSApplication.shared.orderFrontStandardAboutPanel(options: [
                         .applicationName: "Psst",
-                        .applicationVersion: "1.4.0",
-                        .credits: NSAttributedString(
-                            string: "Silencio para concentrarte. Respeto para no molestar.",
-                            attributes: [.foregroundColor: NSColor.secondaryLabelColor]
-                        )
+                        .applicationVersion: "1.5.0",
+                        .credits: credits,
+                        NSApplication.AboutPanelOptionKey(rawValue: "Copyright"): ""
                     ])
                 }
             }

@@ -23,12 +23,20 @@
 Psst es una utilidad nativa, pequeña y transparente para preparar el Mac antes de estudiar, opositar o trabajar en un espacio silencioso. Elige entre tres modos: 🏛️ **Biblioteca** silencia una vez y no vigila nada más, 🎧 **Concentración** (Soft Mode) silencia todo y pide permiso antes de dejar sonar música o vídeo, y 🛡️ **Ultra Focus** (Hard Mode) bloquea el audio sin excepciones hasta que desactives Psst. Al desactivarla, restaura siempre el estado anterior de tu audio, tal cual estaba.
 
 <p align="center">
-  <img src="docs/images/app-window-v1.4.0.png" width="460" alt="Ventana compacta y translúcida de Psst 1.4.0 con Concentración (Soft Mode) activado">
+  <img src="docs/images/app-window-v1.5.0.png" width="460" alt="Ventana compacta y translúcida de Psst 1.5.0: botón ACTIVAR con anillo verde animado y modos Ultra Focus y Concentración seleccionables">
 </p>
 
 <div align="center">
 
 🪟 Ventana nativa y translúcida &nbsp;•&nbsp; 🔒 App Sandbox, sin permisos raros &nbsp;•&nbsp; 🌐 Cero conexión a Internet &nbsp;•&nbsp; ↩️ Siempre reversible
+
+</div>
+
+<br>
+
+<div align="center">
+
+⭐ **Si Psst te resulta útil, dale una estrella al repositorio.** Ayuda a que más gente lo encuentre y a que siga mejorando.
 
 </div>
 
@@ -117,6 +125,8 @@ Los tres modos son excluyentes entre sí y solo pueden cambiarse con Psst inacti
 ## Diseño compacto y nativo 🪟
 
 La ventana fija mide 468 × 500 puntos con el marco de macOS: es prácticamente cuadrada y no tiene desplazamiento. Usa materiales translúcidos de AppKit para integrarse con el escritorio y respeta Reducir transparencia de macOS. Psst también está disponible desde la barra de menús.
+
+El botón principal cuida el detalle: su icono anticipa la acción que vas a provocar (silenciar o encender), y un anillo animado muy sutil lo rodea sin pausa —verde mientras invita a activarlo, rojo mientras recuerda que al pulsarlo se detiene el silencio— para que nunca tengas dudas de qué va a pasar antes de tocarlo.
 
 ## Seguridad Apple por diseño 🔒
 
