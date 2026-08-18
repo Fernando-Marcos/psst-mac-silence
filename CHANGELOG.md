@@ -1,5 +1,9 @@
 # Historial de cambios
 
+## [1.5.1] - 2026-08-18
+
+- Corrige el movimiento "a golpes" del degradado animado sobre "Psst": en vez de recalcular las paradas del degradado (`Gradient.Stop`) en cada fotograma, ahora el contenido del degradado es fijo y solo se traslada con `.offset()`, igual que la rotación del anillo del botón principal. El resultado es un barrido izquierda→derecha realmente fluido, sin recomputar ni redibujar el degradado entero en cada frame.
+
 ## [1.5.0] - 2026-08-18
 
 - Intercambia los iconos del botón principal: **ACTIVAR** ahora muestra el icono de silenciar y **DESACTIVAR** el de encendido, para que el icono anticipe la acción que vas a provocar en lugar del estado actual.

@@ -71,38 +71,33 @@ struct ContentView: View {
         }
     }
 
-    /// Degradado horizontal en bucle perfecto: la ventana visible avanza dos periodos completos
-    /// del patrón `base → highlight → base` (definido cada 1/6) y, al reiniciarse, cae exactamente
-    /// sobre una repetición idéntica del patrón, por lo que el barrido izquierda→derecha no da saltos.
+    /// Degradado horizontal en bucle perfecto: el contenido (3 copias del patrón `base → highlight → base`)
+    /// es fijo y solo se traslada con `.offset()`, igual que la rotación de `inviteRing`. Al no recalcular
+    /// las paradas del degradado en cada fotograma, el barrido se compone como una simple transformación
+    /// (barata para el sistema) en lugar de volver a dibujar el degradado entero, así que es fluido de verdad.
     private func animatedHeaderIcon(systemName: String, base: Color, highlight: Color) -> some View {
-        let stops: [Gradient.Stop] = [
-            .init(color: base, location: 0.0 / 6),
-            .init(color: highlight, location: 1.0 / 6),
-            .init(color: base, location: 2.0 / 6),
-            .init(color: highlight, location: 3.0 / 6),
-            .init(color: base, location: 4.0 / 6),
-            .init(color: highlight, location: 5.0 / 6),
-            .init(color: base, location: 6.0 / 6)
-        ]
-        let windowWidth = 1.0 / 3.0
+        let iconSize: CGFloat = 24
+        let duration = 2.2
 
         return TimelineView(.animation) { timeline in
-            let duration = 3.4
             let t = timeline.date.timeIntervalSinceReferenceDate
                 .truncatingRemainder(dividingBy: duration) / duration
-            let windowStart = t * (1 - windowWidth)
 
-            Image(systemName: systemName)
-                .font(.system(size: 24, weight: .light))
-                .foregroundStyle(
-                    LinearGradient(
-                        gradient: Gradient(stops: stops),
-                        startPoint: UnitPoint(x: windowStart, y: 0.5),
-                        endPoint: UnitPoint(x: windowStart + windowWidth, y: 0.5)
-                    )
-                )
+            LinearGradient(
+                colors: [base, highlight, base, highlight, base, highlight, base],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+            .frame(width: iconSize * 3, height: iconSize)
+            .offset(x: CGFloat(t) * iconSize)
+            .frame(width: iconSize, height: iconSize)
+            .clipped()
+            .mask(
+                Image(systemName: systemName)
+                    .font(.system(size: iconSize, weight: .light))
+            )
         }
-        .frame(width: 24, height: 24)
+        .frame(width: iconSize, height: iconSize)
     }
 
     private var silenceButton: some View {

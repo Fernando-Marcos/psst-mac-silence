@@ -36,7 +36,7 @@ struct PsstApp: App {
 
                     NSApplication.shared.orderFrontStandardAboutPanel(options: [
                         .applicationName: "Psst",
-                        .applicationVersion: "1.5.0",
+                        .applicationVersion: "1.5.1",
                         .credits: credits,
                         NSApplication.AboutPanelOptionKey(rawValue: "Copyright"): ""
                     ])
