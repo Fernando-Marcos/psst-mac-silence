@@ -2,7 +2,7 @@
 
 ## Versiones compatibles
 
-La versión estable más reciente recibe correcciones de seguridad.
+La versión estable más reciente recibe correcciones de seguridad. Cada build de la CI publica la suma SHA-256 del ZIP para que puedas comprobar la descarga con `shasum -a 256 Psst-macOS-universal.zip`.
 
 ## Comunicar una vulnerabilidad
 
@@ -11,6 +11,10 @@ No publiques datos personales ni detalles explotables en una incidencia pública
 ## Modelo de seguridad
 
 Psst está firmado con App Sandbox y el mínimo conjunto de privilegios: únicamente `com.apple.security.app-sandbox`. No ejecuta comandos, no usa AppleScript, no escala a root, no instala helpers, extensiones de kernel ni controladores, y no modifica el SMC.
+
+Cada push pasa por `Scripts/check-privileges.sh`, que falla si el código empieza a usar procesos, AppleScript, Apple Events, red, escalada de privilegios o IOKit, o si la firma lleva algún entitlement distinto de App Sandbox. La CI también escanea secretos con Gitleaks y fija sus acciones por hash.
+
+La instantánea de volumen se valida antes de restaurarla (tamaño, rangos y número de dispositivos) y las salidas se identifican por su UID persistente, de modo que un archivo dañado o un cambio de dispositivo no pueden aplicar valores fuera de rango ni a la salida equivocada.
 
 El audio usa Core Audio. Ultra Focus vigila localmente las propiedades de la salida y vuelve a aplicar mute y volumen cero si cambian, sin dar opción a permitirlo; Concentración (Soft Mode) hace la misma vigilancia pero, ante un intento de reproducir sonido, pide permiso explícito antes de restaurar el audio; el modo Biblioteca solo aplica el silencio inicial reversible, sin vigilancia continua. Psst no captura audio ni inyecta código en otras aplicaciones. macOS mantiene íntegramente la protección térmica y el control de los ventiladores.
 

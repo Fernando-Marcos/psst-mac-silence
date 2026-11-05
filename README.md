@@ -134,7 +134,8 @@ El botón principal cuida el detalle: su icono anticipa la acción que vas a pro
 - **Sin privilegios de administrador**, AppleScript, Apple Events, comandos de shell o procesos auxiliares.
 - **Sin acceso** a red, cámara, micrófono, contactos ni archivos elegidos por el usuario.
 - Audio controlado con la API pública **Core Audio**.
-- Estado reversible guardado exclusivamente en el contenedor privado de la app.
+- Estado reversible guardado exclusivamente en el contenedor privado de la app, validado antes de restaurarlo y asociado al identificador persistente de cada salida.
+- **Comprobación automática** en cada cambio: la CI falla si el código usa procesos, red o AppleScript, o si la firma tiene un permiso distinto de App Sandbox.
 
 Psst bloquea el **sonido audible** de la salida predeterminada compatible. Por seguridad y privacidad no inspecciona ni controla el reproductor de Spotify, el navegador o una app de vídeo: su reproducción puede avanzar sin que se oiga nada. Algunas salidas digitales o externas que no permiten volumen o mute por software quedan fuera del control de cualquier app sandboxed; Psst lo comunica si no puede silenciarlas.
 

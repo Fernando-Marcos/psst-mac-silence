@@ -1,5 +1,22 @@
 # Historial de cambios
 
+## [1.5.2] - 2026-11-05
+
+Versión de seguridad y fiabilidad. No cambia la interfaz ni el funcionamiento de los tres modos.
+
+- La restauración identifica cada salida por su UID persistente de Core Audio en lugar de por su identificador temporal. Tras reiniciar el Mac o reconectar unos cascos, Psst ya no puede aplicar el volumen guardado a una salida distinta.
+- Si una salida silenciada ya no está conectada al desactivar Psst, se restauran las demás y se avisa en pantalla, en lugar de fallar con un mensaje engañoso.
+- Psst no silencia nada si no puede guardar antes el volumen actual: nunca te quedas sin forma de volver al estado previo.
+- La instantánea de volumen se valida al leerla (tamaño máximo, volumen entre 0 y 1, mute 0/1, canales y dispositivos acotados) y se guarda con permisos solo para tu usuario. Un archivo dañado o manipulado no puede llevar valores extraños a Core Audio.
+- Si falta el volumen guardado al desactivar, Psst lo indica para que lo ajustes a mano.
+- Al silenciar, aplica primero el mute y después el volumen cero, para evitar cualquier pico audible.
+- Las lecturas de Core Audio rechazan respuestas parciales.
+- Impide abrir dos instancias de Psst a la vez, que podían pisarse el volumen guardado.
+- "Acerca de Psst" lee la versión directamente del bundle, así no vuelve a quedarse desfasada.
+- Nuevo `Scripts/check-privileges.sh`: bloquea en CI cualquier uso de procesos, AppleScript, Apple Events, red, escalada de privilegios o IOKit, y exige que el único entitlement (en el archivo y en la firma) sea App Sandbox con Hardened Runtime.
+- CI más estricta: acciones de GitHub fijadas por hash, credenciales no persistentes, escaneo de secretos con Gitleaks, pruebas XCTest (`swift test`), comprobación de que la versión del bundle coincide con el CHANGELOG y suma SHA-256 del ZIP generado. Dependabot vigila las acciones.
+- `build-app.sh` parte de un bundle limpio, firma sin `--deep` y verifica la firma; `test.sh` usa un directorio temporal único.
+
 ## [1.5.1] - 2026-08-18
 
 - Corrige el movimiento "a golpes" del degradado animado sobre "Psst": en vez de recalcular las paradas del degradado (`Gradient.Stop`) en cada fotograma, ahora el contenido del degradado es fijo y solo se traslada con `.offset()`, igual que la rotación del anillo del botón principal. El resultado es un barrido izquierda→derecha realmente fluido, sin recomputar ni redibujar el degradado entero en cada frame.

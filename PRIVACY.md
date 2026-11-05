@@ -8,7 +8,7 @@ No incluye cuentas, publicidad, analítica, telemetría, rastreadores ni servici
 
 ## Datos locales
 
-Al activar el silencio, Psst guarda una instantánea mínima del volumen y mute necesarios para restaurar el audio. El archivo permanece dentro del contenedor privado asignado por App Sandbox y se elimina al desactivar el modo.
+Al activar el silencio, Psst guarda una instantánea mínima del volumen y mute necesarios para restaurar el audio, junto al identificador técnico (UID) que macOS asigna a cada salida de sonido para no confundirla con otra. El archivo permanece dentro del contenedor privado asignado por App Sandbox, solo es legible por tu usuario y se elimina al desactivar el modo. Nunca sale del Mac.
 
 Mientras Ultra Focus o Concentración están activos, Psst consulta localmente el volumen, el estado de mute y una señal genérica de actividad de la salida. El modo Biblioteca no realiza esta comprobación continua. Psst no captura audio, no analiza lo que escuchas, no identifica aplicaciones, canciones o vídeos y no conserva un historial de actividad.
 

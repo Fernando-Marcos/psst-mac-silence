@@ -4,6 +4,11 @@ import SwiftUI
 struct PsstApp: App {
     @StateObject private var silence = SilenceController()
 
+    /// Read from Info.plist so the About panel can never drift from the bundle version again.
+    private static var appVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
+    }
+
     var body: some Scene {
         WindowGroup(id: "main") {
             ContentView()
@@ -36,7 +41,7 @@ struct PsstApp: App {
 
                     NSApplication.shared.orderFrontStandardAboutPanel(options: [
                         .applicationName: "Psst",
-                        .applicationVersion: "1.5.1",
+                        .applicationVersion: Self.appVersion,
                         .credits: credits,
                         NSApplication.AboutPanelOptionKey(rawValue: "Copyright"): ""
                     ])

@@ -8,6 +8,8 @@ APP_DIR="$BUILD_DIR/Psst.app"
 ARCH_DIR="$BUILD_DIR/architectures"
 
 cd "$PROJECT_DIR"
+# Start from a clean bundle so no stale file from a previous build ends up signed.
+rm -rf "$APP_DIR" "$ARCH_DIR"
 mkdir -p "$ARCH_DIR"
 
 COMMON_FLAGS=(-swift-version 5 -parse-as-library -O -framework SwiftUI -framework AppKit -framework CoreAudio)
@@ -23,5 +25,9 @@ if [[ -f "$PROJECT_DIR/Resources/AppIcon.icns" ]]; then
   cp "$PROJECT_DIR/Resources/AppIcon.icns" "$APP_DIR/Contents/Resources/AppIcon.icns"
 fi
 
-codesign --force --deep --options runtime --entitlements "$PROJECT_DIR/Resources/Psst.entitlements" --sign - "$APP_DIR"
+# Single-binary bundle: sign it directly (no --deep) with Hardened Runtime and App Sandbox.
+codesign --force --options runtime --timestamp=none \
+  --entitlements "$PROJECT_DIR/Resources/Psst.entitlements" --sign - "$APP_DIR"
+codesign --verify --strict "$APP_DIR"
+"$SCRIPT_DIR/check-privileges.sh" "$APP_DIR"
 echo "$APP_DIR"

@@ -9,18 +9,48 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  secrets-scan:
+    name: Secret scan (Gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: false
+          GITLEAKS_ENABLE_COMMENTS: false
+
   test-and-build:
     name: Test and build universal app
     runs-on: macos-15
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
-      - name: Run tests
+      - name: Check privilege surface
+        run: ./Scripts/check-privileges.sh
+
+      - name: Run smoke tests
         run: ./Scripts/test.sh
+
+      - name: Run unit tests
+        run: swift test
 
       - name: Build application
         run: ./Scripts/build-app.sh
@@ -28,16 +58,23 @@ jobs:
       - name: Verify bundle
         run: |
           plutil -lint build/Psst.app/Contents/Info.plist
-          codesign --verify --deep --strict build/Psst.app
+          codesign --verify --strict build/Psst.app
           test "$(codesign -d --entitlements :- build/Psst.app 2>/dev/null | plutil -extract 'com\.apple\.security\.app-sandbox' raw -o - -)" = "true"
+          ./Scripts/check-privileges.sh build/Psst.app
           lipo build/Psst.app/Contents/MacOS/Psst -verify_arch x86_64 arm64
+          test "$(plutil -extract CFBundleShortVersionString raw -o - build/Psst.app/Contents/Info.plist)" = \
+               "$(grep -m1 -oE '^## \[[0-9]+\.[0-9]+\.[0-9]+\]' CHANGELOG.md | tr -d '#[] ')"
 
       - name: Package application
-        run: ditto -c -k --sequesterRsrc --keepParent build/Psst.app Psst-macOS-universal.zip
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent build/Psst.app Psst-macOS-universal.zip
+          shasum -a 256 Psst-macOS-universal.zip | tee Psst-macOS-universal.zip.sha256
 
       - name: Upload application artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: Psst-macOS-universal
-          path: Psst-macOS-universal.zip
+          path: |
+            Psst-macOS-universal.zip
+            Psst-macOS-universal.zip.sha256
           if-no-files-found: error

@@ -17,7 +17,8 @@
 - `Resources/Info.plist`: metadatos del bundle de la app.
 - `Tests/ModelSmoke.swift` y `Tests/PsstTests/`: pruebas de `FocusMode` y de la instantánea de audio (sin dependencias de UI).
 - `Scripts/build-app.sh`: compila universal, empaqueta el `.app` y firma ad hoc (`codesign --sign -`).
-- `Scripts/test.sh`: compila y ejecuta las pruebas de humo de `Models.swift`.
+- `Scripts/test.sh`: ejecuta `check-privileges.sh` y compila y ejecuta las pruebas de humo de `Models.swift`.
+- `Scripts/check-privileges.sh`: falla ante APIs que amplían privilegios en `Sources/` o entitlements distintos de `app-sandbox` (archivo y, con argumento, la firma del `.app`). No lo debilites para que pase un cambio.
 - `Scripts/build-icon.sh`: genera `Resources/AppIcon.icns` a partir del diseño maestro en `docs/images/app-icon.png`.
 - `docs/ARCHITECTURE.md`: decisiones de seguridad y flujo de activación/desactivación — consultar antes de tocar `SilenceController.swift` o `SystemServices.swift`.
 - `docs/releases/vX.Y.Z.md` + `CHANGELOG.md`: historial de versiones; actualizar ambos en cada release.
@@ -27,7 +28,7 @@
 # Orden de trabajo
 
 1. Antes de tocar audio/sandbox, lee `docs/ARCHITECTURE.md` para no romper el modelo de privilegios ni el flujo de activación/restauración.
-2. Cambios en `Sources/Psst/`, ejecuta `./Scripts/test.sh` (pruebas de modelos) antes de dar nada por terminado. Si tocas `SilenceController.swift`, verifica manualmente activar/desactivar y los tres modos (Biblioteca, Concentración, Ultra Focus) en un Mac real — el comportamiento de Core Audio no es simulable en pruebas unitarias.
+2. Cambios en `Sources/Psst/`, ejecuta `./Scripts/test.sh` (pruebas de modelos) y `swift test` (XCTest) antes de dar nada por terminado. Si tocas `SilenceController.swift`, verifica manualmente activar/desactivar y los tres modos (Biblioteca, Concentración, Ultra Focus) en un Mac real — el comportamiento de Core Audio no es simulable en pruebas unitarias.
 3. Para verificar el build completo: `./Scripts/build-app.sh` y luego `codesign -dvvv --entitlements - build/Psst.app` para confirmar que el entitlement sigue siendo únicamente `app-sandbox`.
 4. Tras cada cambio que modifique `Sources/Psst/` y compile correctamente, sustituye la app instalada en `/Applications/Psst.app` por el build nuevo (cerrar la instancia en ejecución, borrar la anterior, copiar `build/Psst.app` y volver a abrirla) para que Fernando siempre pruebe la versión al día en su equipo.
 5. Actualiza `CHANGELOG.md` y añade `docs/releases/vX.Y.Z.md` en cada cambio de versión visible al usuario; sigue el formato de los releases anteriores.

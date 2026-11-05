@@ -26,7 +26,11 @@ final class SilenceController: ObservableObject {
         focusMode = FocusMode(rawValue: UserDefaults.standard.string(forKey: focusModeKey) ?? "") ?? .hard
         let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("Psst", isDirectory: true)
-        try? FileManager.default.createDirectory(at: support, withIntermediateDirectories: true)
+        try? FileManager.default.createDirectory(
+            at: support,
+            withIntermediateDirectories: true,
+            attributes: [.posixPermissions: 0o700]
+        )
         snapshotURL = support.appendingPathComponent("restore-state.json")
         if isActive {
             statusMessage = activeStatusMessage
@@ -45,10 +49,18 @@ final class SilenceController: ObservableObject {
     func allowSoftAudio() {
         softAudioAllowed = true
         isShowingSoftPermissionPrompt = false
-        if let snapshot = load() {
-            try? AudioService.restore(snapshot)
+        guard let snapshot = load() else {
+            statusMessage = "Música y vídeo permitidos, pero no se encontró el volumen previo. Súbelo manualmente."
+            return
         }
-        statusMessage = "Música y vídeo permitidos. Concentración ya no vigila el audio hasta que desactives Psst."
+        do {
+            let report = try AudioService.restore(snapshot)
+            statusMessage = report.missingDevices > 0
+                ? "Música y vídeo permitidos. Algunas salidas ya no están conectadas."
+                : "Música y vídeo permitidos. Concentración ya no vigila el audio hasta que desactives Psst."
+        } catch {
+            statusMessage = error.localizedDescription
+        }
     }
 
     /// Called from the Soft Mode alert when the user keeps the silence.
@@ -59,11 +71,22 @@ final class SilenceController: ObservableObject {
     }
 
     private func activate() {
+        let snapshot: SilenceSnapshot
         do {
-            let snapshot = try AudioService.capture()
-            save(snapshot)
+            snapshot = try AudioService.capture()
+        } catch {
+            statusMessage = error.localizedDescription
+            return
+        }
+        // Never silence without a stored way back: if the snapshot cannot be written, abort.
+        guard save(snapshot) else {
+            statusMessage = "No se pudo guardar el volumen actual. Psst no ha silenciado nada para no perder tus ajustes."
+            return
+        }
+        do {
             try AudioService.silence()
         } catch {
+            try? FileManager.default.removeItem(at: snapshotURL)
             statusMessage = error.localizedDescription
             return
         }
@@ -81,8 +104,16 @@ final class SilenceController: ObservableObject {
         stopEnforcement()
         var warnings: [String] = []
         if let snapshot = load() {
-            do { try AudioService.restore(snapshot) }
-            catch { warnings.append(error.localizedDescription) }
+            do {
+                let report = try AudioService.restore(snapshot)
+                if report.missingDevices > 0 {
+                    warnings.append("Algunas salidas ya no están conectadas; revisa su volumen al volver a conectarlas.")
+                }
+            } catch {
+                warnings.append(error.localizedDescription)
+            }
+        } else {
+            warnings.append("No se encontró el volumen previo. Ajusta el volumen manualmente.")
         }
         isActive = false
         softAudioAllowed = false
@@ -93,7 +124,7 @@ final class SilenceController: ObservableObject {
 
     private func resumeEnforcement() {
         if load() == nil, let snapshot = try? AudioService.capture() {
-            save(snapshot)
+            _ = save(snapshot)
         }
         try? AudioService.silence()
         wasAudioRunning = false
@@ -153,7 +184,9 @@ final class SilenceController: ObservableObject {
     private func preserveNewOutputState() {
         guard let current = try? AudioService.capture() else { return }
         let stored = load() ?? SilenceSnapshot(devices: [])
-        save(stored.mergingMissingState(from: current))
+        let merged = stored.mergingMissingState(from: current)
+        guard merged != stored else { return }
+        _ = save(merged)
     }
 
     private func showBlockedNotice() {
@@ -193,14 +226,29 @@ final class SilenceController: ObservableObject {
         }
     }
 
-    private func save(_ snapshot: SilenceSnapshot) {
-        if let data = try? JSONEncoder().encode(snapshot) {
-            try? data.write(to: snapshotURL, options: .atomic)
+    /// Writes the restore point atomically, readable only by the current user, inside the
+    /// App Sandbox container. Returns `false` if it could not be persisted.
+    @discardableResult
+    private func save(_ snapshot: SilenceSnapshot) -> Bool {
+        let safeSnapshot = snapshot.sanitized()
+        guard !safeSnapshot.isEmpty,
+              let data = try? JSONEncoder().encode(safeSnapshot),
+              data.count <= SilenceSnapshot.maxEncodedSize else { return false }
+        do {
+            try data.write(to: snapshotURL, options: [.atomic])
+            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: snapshotURL.path)
+            return true
+        } catch {
+            return false
         }
     }
 
+    /// Reads the restore point with a size limit and sanitizes every value before use.
     private func load() -> SilenceSnapshot? {
-        guard let data = try? Data(contentsOf: snapshotURL) else { return nil }
-        return try? JSONDecoder().decode(SilenceSnapshot.self, from: data)
+        guard let attributes = try? FileManager.default.attributesOfItem(atPath: snapshotURL.path),
+              let size = attributes[.size] as? NSNumber,
+              size.intValue <= SilenceSnapshot.maxEncodedSize,
+              let data = try? Data(contentsOf: snapshotURL) else { return nil }
+        return try? SilenceSnapshot.decodeValidated(from: data)
     }
 }
